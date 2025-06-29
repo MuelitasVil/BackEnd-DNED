@@ -1,14 +1,11 @@
 services:
-  mysql:
-    build:
+  mysql-dned:
+    build: 
       context: .
       dockerfile: Dockerfile-mysql
     container_name: dned-mysql
-    environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    env_file:
+      - .env
     ports:
       - "3307:3306"
     volumes:
@@ -16,22 +13,22 @@ services:
     networks:
       - app-net
 
-  python-app:
-    build:
-      context: .
-      dockerfile: Dockerfile-python
-      target: development
-    container_name: dned-backend
-    depends_on:
-      - mysql
-    env_file:
-      - .env
-    ports:
-      - "8000:8000"
-    networks:
-      - app-net
-    volumes:
-      - ./app:/app
+  #python-app:
+  #  build:
+  #    context: .
+  #    dockerfile: Dockerfile-python
+  #    target: development
+  #  container_name: dned-backend
+  #  depends_on:
+  #    - mysql
+  #  env_file:
+  #    - .env
+  #  ports:
+  #    - "8000:8000"
+  #  networks:
+  #    - app-net
+  #  volumes:
+  #    - ./app:/app
 
 volumes:
   mysql-data:

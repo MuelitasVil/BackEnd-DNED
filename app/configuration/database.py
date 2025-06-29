@@ -1,17 +1,28 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
-import os
+from sqlmodel import SQLModel, create_engine, Session
 from dotenv import load_dotenv
+import os
 
-load_dotenv()  
+load_dotenv()
+
 MYSQL_USER = os.getenv("MYSQL_USER")
-MYSQL_USER_PASSWORD = os.getenv("MYSQL_USER_PASSWORD")
-MYSQL_HOST = os.getenv("MYSQL_HOST") 
+MYSQL_ROOT = os.getenv("MYSQL_ROOT")
+MYSQL_ROOT_PASSWORD = os.getenv("MYSQL_ROOT")
+MYSQL_USER_PASSWORD = os.getenv("MYSQL_ROOT_PASSWORD")
+MYSQL_HOST = os.getenv("MYSQL_HOST")
 MYSQL_PORT = os.getenv("MYSQL_PORT")
 MYSQL_DATABASE = os.getenv("MYSQL_DATABASE")
 
-DATABASE_URL = f"mysql+pymysql://{MYSQL_USER}:{MYSQL_USER_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DATABASE}"
+DATABASE_URL = f"mysql+pymysql://{MYSQL_ROOT}:{MYSQL_USER_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DATABASE}"
+print(f"Connecting to database at {DATABASE_URL}")
 
+# El engine es exactamente el mismo
 engine = create_engine(DATABASE_URL, echo=True)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
+
+# Crear tablas
+def create_db_and_tables():
+    SQLModel.metadata.create_all(engine)
+
+# Proveer sesiones como dependencia
+def get_session():
+    with Session(engine) as session:
+        yield session

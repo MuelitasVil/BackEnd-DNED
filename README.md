@@ -1,10 +1,10 @@
-# 🧠 DNED Backend
+# DNED Backend
 
 Este proyecto es una API desarrollada en **FastAPI** con persistencia de datos en **MySQL**, orientada a proporcionar servicios backend para un sistema modular. Su diseño sigue una arquitectura basada en capas, que facilita la escalabilidad y el mantenimiento del código.
 
 ---
 
-## 🚀 Tecnologías utilizadas
+## Tecnologías utilizadas
 
 - **FastAPI**: Framework moderno y rápido para construir APIs con Python 3.7+ basado en *type hints*.
 - **MySQL**: Sistema de gestión de bases de datos relacional utilizado como almacenamiento persistente.
@@ -13,7 +13,7 @@ Este proyecto es una API desarrollada en **FastAPI** con persistencia de datos e
 
 ---
 
-## ⚙️ Requisitos
+## Requisitos
 
 - Python 3.11 o superior
 - MySQL 8.0 o superior (si se ejecuta en local)
@@ -21,7 +21,7 @@ Este proyecto es una API desarrollada en **FastAPI** con persistencia de datos e
 
 ---
 
-## 🔧 Configuración local (ambiente virtual)
+## Configuración local (ambiente virtual)
 
 1. **Crear el entorno virtual**
 
