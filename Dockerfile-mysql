@@ -1,4 +1,4 @@
-FROM mysql:oraclelinux9
+FROM mysql
 
 ENV MYSQL_ROOT_PASSWORD=asdf
 ENV MYSQL_DATABASE=mydb
