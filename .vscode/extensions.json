@@ -1,0 +1,15 @@
+{
+    "recommendations": [
+        "njpwerner.autodocstring",
+        "mhutchie.git-graph",
+        "cstrap.flask-snippets",
+        "donjayamanne.githistory",
+        "eamodio.gitlens",
+        "ms-python.python",
+        "mgesbert.python-path",
+        "littlefoxteam.vscode-python-test-adapter",
+        "tabnine.tabnine-vscode",
+        "gruntfuggly.todo-tree",
+        "vscode-icons-team.vscode-icons"
+    ]
+}
