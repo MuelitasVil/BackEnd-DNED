@@ -23,6 +23,8 @@ Este proyecto es una API desarrollada en **FastAPI** con persistencia de datos e
 
 ## Configuración local (ambiente virtual)
 
+Nota : Ingresar a la carpeta app.
+
 1. **Crear el entorno virtual**
 
    ```bash
@@ -55,8 +57,11 @@ Este proyecto es una API desarrollada en **FastAPI** con persistencia de datos e
    pip freeze > requirements.txt
    ```
 
----
-
+5. **Levantar el sistema en local**
+   
+   ```bash
+   fastapi dev main.py 
+   ```
 ## 🐳 Uso con Docker
 
 1. **Levantar el entorno completo**

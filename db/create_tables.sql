@@ -145,3 +145,16 @@ CREATE TABLE IF NOT EXISTS email_sender_headquarters (
     FOREIGN KEY (cod_headquarters) REFERENCES headquarters(cod_headquarters)
 );
 
+
+CREATE TABLE IF NOT EXISTS system_user (
+    email VARCHAR(100) PRIMARY KEY,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    hashed_password TEXT NOT NULL,
+    state BOOLEAN DEFAULT TRUE,
+    salt VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS token (
+    jwt_token TEXT PRIMARY KEY,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
