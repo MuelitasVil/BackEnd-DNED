@@ -10,6 +10,8 @@ Este proyecto es una API desarrollada en **FastAPI** con persistencia de datos e
 - **MySQL**: Sistema de gestión de bases de datos relacional utilizado como almacenamiento persistente.
 - **Uvicorn**: Servidor ASGI utilizado para ejecutar la aplicación FastAPI.
 - **Docker (opcional)**: Para levantar el entorno completo con contenedores de forma sencilla.
+- **JWT (JSON Web Tokens)**: Mecanismo para autenticación segura basada en tokens.
+- **Flake8**: Herramienta de análisis estático de código que garantiza el cumplimiento de la guía de estilo PEP8.
 
 ---
 
@@ -23,7 +25,7 @@ Este proyecto es una API desarrollada en **FastAPI** con persistencia de datos e
 
 ## Configuración local (ambiente virtual)
 
-Nota : Ingresar a la carpeta app.
+> Nota: Ingresar a la carpeta `app`.
 
 1. **Crear el entorno virtual**
 
@@ -58,10 +60,13 @@ Nota : Ingresar a la carpeta app.
    ```
 
 5. **Levantar el sistema en local**
-   
+
    ```bash
    fastapi dev main.py 
    ```
+
+---
+
 ## 🐳 Uso con Docker
 
 1. **Levantar el entorno completo**
@@ -78,6 +83,16 @@ Nota : Ingresar a la carpeta app.
 
 ---
 
+## 🔐 Autenticación
+
+El sistema implementa autenticación mediante **JWT (JSON Web Tokens)**. Al iniciar sesión mediante el endpoint `/auth/login`, se emite un token firmado que debe incluirse en las cabeceras de autorización de cada petición protegida:
+
+```http
+Authorization: Bearer <tu_token>
+```
+
+---
+
 ## 🧱 Arquitectura del proyecto
 
 El proyecto sigue una arquitectura en capas:
@@ -89,11 +104,22 @@ El proyecto sigue una arquitectura en capas:
 ├── domain/            # Modelos y estructuras de datos (DTOs, entidades)
 ├── repository/        # Acceso y lógica de persistencia de datos
 ├── service/           # Reglas de negocio y procesamiento principal
+├── utils/             # Utilidades generales como autenticación
 ├── main.py            # Punto de entrada de la aplicación
 └── requirements.txt   # Dependencias del proyecto
 ```
 
 Este enfoque modular facilita el mantenimiento, testing y escalabilidad del sistema.
+
+---
+
+## 🧪 Calidad de código
+
+El proyecto utiliza `flake8` como herramienta para asegurar el cumplimiento del estándar de estilo **PEP8**. Para ejecutarlo:
+
+```bash
+flake8 .
+```
 
 ---
 
@@ -107,6 +133,9 @@ httpx==0.28.1
 python-dotenv==1.1.1
 email-validator==2.2.0
 rich==14.0.0
+flake8==7.0.0
+passlib==1.7.4
+pyjwt==2.8.0
 ```
 
 ---
@@ -117,7 +146,7 @@ Si tienes preguntas, sugerencias o deseas contribuir, no dudes en abrir un issue
 
 ---
 
-## Documentacion :
-### SqlAlchemy :
-- https://docs.sqlalchemy.org/en/20/tutorial/engine.html
+## Documentación
 
+### SQLAlchemy:
+- https://docs.sqlalchemy.org/en/20/tutorial/engine.html

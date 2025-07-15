@@ -1,7 +1,9 @@
 from .controllers import (
     period_controller,
-    user_workspace_controller
-) 
+    user_workspace_controller,
+    auth_controller
+)
+
 from fastapi import FastAPI
 
 app = FastAPI()
@@ -14,3 +16,4 @@ def read_root():
 
 app.include_router(period_controller.router)
 app.include_router(user_workspace_controller.router)
+app.include_router(auth_controller.router)
