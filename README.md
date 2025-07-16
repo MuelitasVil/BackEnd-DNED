@@ -22,6 +22,12 @@ Este proyecto es una API desarrollada en **FastAPI** con persistencia de datos e
 - PowerShell o terminal compatible para entornos virtuales
 
 ---
+## Testing
+Para ejecutar las pruebas unitarias del sistema ejecutar : 
+   ```bash
+   pytest
+   ```
+---
 
 ## Configuración local (ambiente virtual)
 
@@ -150,3 +156,5 @@ Si tienes preguntas, sugerencias o deseas contribuir, no dudes en abrir un issue
 
 ### SQLAlchemy:
 - https://docs.sqlalchemy.org/en/20/tutorial/engine.html
+
+

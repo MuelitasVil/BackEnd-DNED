@@ -2,6 +2,7 @@ from app.configuration.database import engine
 import pytest
 from sqlalchemy.exc import OperationalError
 
+
 def test_database_connection():
     try:
         with engine.connect() as connection:
