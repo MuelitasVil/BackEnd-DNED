@@ -7,5 +7,5 @@ class Token(SQLModel, table=True):
 
     jwt_token: str = Field(primary_key=True)
     email: str = Field(
-        foreign_key="system_user.email", max_length=100, primary_key=True)
+        foreign_key="system_user.email", max_length=100)
     created_at: datetime = Field(default_factory=datetime.utcnow)
