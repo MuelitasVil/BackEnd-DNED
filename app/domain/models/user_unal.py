@@ -4,6 +4,8 @@ from typing import Optional
 
 
 class UserUnal(SQLModel, table=True):
+    __tablename__ = "user_unal"
+
     email_unal: str = Field(primary_key=True, max_length=100)
     document: Optional[str] = Field(default=None, max_length=50)
     name: Optional[str] = Field(default=None, max_length=100)
