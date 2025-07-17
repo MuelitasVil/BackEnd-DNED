@@ -4,7 +4,8 @@ from .controllers import (
     auth_controller,
     user_workspace_associate_controller,
     user_unal_controller,
-    unit_unal_controller
+    unit_unal_controller,
+    user_unit_associate_controller
 )
 
 from fastapi import FastAPI
@@ -17,9 +18,11 @@ def read_root():
     return {"Hello": "World"}
 
 
+app.include_router(auth_controller.router)
 app.include_router(period_controller.router)
 app.include_router(user_workspace_controller.router)
-app.include_router(auth_controller.router)
 app.include_router(user_workspace_associate_controller.router)
 app.include_router(user_unal_controller.router)
 app.include_router(unit_unal_controller.router)
+app.include_router(user_unit_associate_controller.router)   
+
