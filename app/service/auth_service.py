@@ -47,5 +47,11 @@ class AuthService:
         jwt_token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
 
         # Guardar token en DB
-        repo.create_token(Token(jwt_token=jwt_token))
+        repo.create_token(
+            Token(
+                jwt_token=jwt_token,
+                email=user.email,
+                created_at=datetime.utcnow()
+            )
+        )
         return jwt_token

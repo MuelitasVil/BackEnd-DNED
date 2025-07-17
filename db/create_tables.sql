@@ -145,7 +145,7 @@ CREATE TABLE IF NOT EXISTS email_sender_headquarters (
     FOREIGN KEY (cod_headquarters) REFERENCES headquarters(cod_headquarters)
 );
 
-
+-- Auth tables : 
 CREATE TABLE IF NOT EXISTS system_user (
     email VARCHAR(100) PRIMARY KEY,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -156,5 +156,7 @@ CREATE TABLE IF NOT EXISTS system_user (
 
 CREATE TABLE IF NOT EXISTS token (
     jwt_token VARCHAR(512) PRIMARY KEY,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    email VARCHAR(100) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (email) REFERENCES system_user(email)
 );
