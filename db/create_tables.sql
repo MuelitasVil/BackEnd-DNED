@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS user_unal (
 -- Tabla: user_workspace_associate
 CREATE TABLE IF NOT EXISTS user_workspace_associate (
     email_unal VARCHAR(100),
-    cod_unit CHAR(50),
+    user_workspace_id CHAR(50),
     cod_period CHAR(50),
     FOREIGN KEY (email_unal) REFERENCES user_unal(email_unal),
     FOREIGN KEY (cod_period) REFERENCES period(cod_period)
