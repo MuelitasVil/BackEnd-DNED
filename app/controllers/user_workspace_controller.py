@@ -1,3 +1,4 @@
+from app.utils.auth import get_current_user
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
@@ -20,7 +21,8 @@ def list_user_workspaces(session: Session = Depends(get_session)):
 @router.get("/{workspace_id}", response_model=UserWorkspace)
 def get_user_workspace(
     workspace_id: str,
-    session: Session = Depends(get_session)
+    session: Session = Depends(get_session),
+    user_email: str = Depends(get_current_user)
 ):
     workspace = UserWorkspaceService.get_by_id(workspace_id, session)
     if not workspace:
@@ -35,7 +37,8 @@ def get_user_workspace(
 )
 def create_user_workspace(
     data: UserWorkspaceInput,
-    session: Session = Depends(get_session)
+    session: Session = Depends(get_session),
+    user_email: str = Depends(get_current_user)
 ):
     return UserWorkspaceService.create(data, session)
 
@@ -43,7 +46,8 @@ def create_user_workspace(
 @router.patch("/{workspace_id}", response_model=UserWorkspace)
 def update_user_workspace(
     workspace_id: str, data: UserWorkspaceInput,
-    session: Session = Depends(get_session)
+    session: Session = Depends(get_session),
+    user_email: str = Depends(get_current_user)
 ):
     updated = UserWorkspaceService.update(workspace_id, data, session)
     if not updated:
@@ -54,7 +58,8 @@ def update_user_workspace(
 @router.delete("/{workspace_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_user_workspace(
     workspace_id: str,
-    session: Session = Depends(get_session)
+    session: Session = Depends(get_session),
+    user_email: str = Depends(get_current_user)
 ):
     deleted = UserWorkspaceService.delete(workspace_id, session)
     if not deleted:
