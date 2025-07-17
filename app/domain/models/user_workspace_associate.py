@@ -4,6 +4,8 @@ from sqlmodel import SQLModel, Field
 class UserWorkspaceAssociate(
     SQLModel, table=True
 ):
+    __tablename__ = "user_workspace_associate"
+
     email_unal: str = Field(
         foreign_key="user_unal.email_unal", max_length=100, primary_key=True)
     cod_unit: str = Field(

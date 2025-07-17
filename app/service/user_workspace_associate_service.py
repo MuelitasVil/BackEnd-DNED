@@ -1,5 +1,5 @@
 from sqlmodel import Session
-from app.domain.dtos.user_workspace_associate.user_workspace_associate_input import (
+from app.domain.dtos.user_workspace_associate.user_workspace_associate_input import (  # noqa: E501
     UserWorkspaceAssociateInput
 )
 from app.domain.models.user_workspace_associate import UserWorkspaceAssociate
