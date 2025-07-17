@@ -14,7 +14,10 @@ router = APIRouter(prefix="/user-workspaces", tags=["User Workspaces"])
 
 
 @router.get("/", response_model=List[UserWorkspace])
-def list_user_workspaces(session: Session = Depends(get_session)):
+def list_user_workspaces(
+    session: Session = Depends(get_session),
+    user_email: str = Depends(get_current_user)
+):
     return UserWorkspaceService.get_all(session)
 
 
