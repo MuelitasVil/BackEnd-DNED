@@ -44,7 +44,7 @@ def delete_associate(
 ):
     deleted = UserWorkspaceAssociateService.delete(
         data.email_unal,
-        data.cod_unit,
+        data.user_workspace_id,
         data.cod_period,
         session
     )

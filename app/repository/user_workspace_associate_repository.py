@@ -6,9 +6,13 @@ class UserWorkspaceAssociateRepository:
     def __init__(self, session: Session):
         self.session = session
 
-    def create(self, associate: UserWorkspaceAssociate):
+    def create(
+        self,
+        associate: UserWorkspaceAssociate
+    ) -> UserWorkspaceAssociate:
         self.session.add(associate)
         self.session.commit()
+        self.session.refresh(associate)
         return associate
 
     def get_all(self):
