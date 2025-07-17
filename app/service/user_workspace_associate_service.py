@@ -5,21 +5,15 @@ from app.domain.dtos.user_workspace_associate.user_workspace_associate_input imp
 from app.repository.user_workspace_associate_repository import (
     UserWorkspaceAssociateRepository
 )
+from app.domain.models.user_workspace_associate import UserWorkspaceAssociate
 
 
 class UserWorkspaceAssociateService:
     @staticmethod
     def create(input_data: UserWorkspaceAssociateInput, session: Session):
-        UserWorkspaceAssociate = (
-            UserWorkspaceAssociateRepository(session).get_by_keys(
-                email_unal=input_data.email_unal,
-                user_workspace_id=input_data.user_workspace_id,
-                cod_period=input_data.cod_period
-            )
-        )
         associate = UserWorkspaceAssociate(**input_data.model_dump())
         return UserWorkspaceAssociateRepository(session).create(associate)
-    
+
     @staticmethod
     def get_all(session: Session):
         return UserWorkspaceAssociateRepository(session).get_all()

@@ -1,10 +1,10 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from typing import Optional
 from datetime import date
 
 
 class UserUnalInput(BaseModel):
-    email_unal: str
+    email_unal: EmailStr
     document: Optional[str] = None
     name: Optional[str] = None
     lastname: Optional[str] = None
