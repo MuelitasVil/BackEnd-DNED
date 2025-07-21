@@ -85,8 +85,8 @@ CREATE TABLE IF NOT EXISTS headquarters (
     type_facultad VARCHAR(50)
 );
 
--- Tabla: school_sede_associate
-CREATE TABLE IF NOT EXISTS school_sede_associate (
+-- Tabla: school_headquarters_associate
+CREATE TABLE IF NOT EXISTS school_headquarters_associate (
     cod_school CHAR(50),
     cod_headquarters CHAR(50),
     cod_period CHAR(50),
