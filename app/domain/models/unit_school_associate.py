@@ -2,6 +2,8 @@ from sqlmodel import SQLModel, Field
 
 
 class UnitSchoolAssociate(SQLModel, table=True):
+    __tablename__ = "unit_school_associate"
+
     cod_unit: str = Field(
         foreign_key="unit_unal.cod_unit",
         primary_key=True,
