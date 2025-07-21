@@ -3,7 +3,7 @@ from typing import List, Optional
 
 from app.repository.school_headquarters_associate_repository import (
     SchoolHeadquartersAssociateRepository
-) 
+)
 from app.domain.models.school_headquarters_associate import (
     SchoolHeadquartersAssociate
 )

@@ -9,7 +9,8 @@ from .controllers import (
     user_unit_associate_controller,
     school_controller,
     headquarters_controller,
-    school_headquarters_associate_controller
+    school_headquarters_associate_controller,
+    type_user_controller
 )
 
 from fastapi import FastAPI
@@ -33,3 +34,4 @@ app.include_router(school_controller.router)
 app.include_router(unit_school_associate_controller.router)
 app.include_router(headquarters_controller.router)
 app.include_router(school_headquarters_associate_controller.router)
+app.include_router(type_user_controller.router)
