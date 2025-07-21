@@ -4,35 +4,41 @@ from typing import List
 
 from app.configuration.database import get_session
 from app.utils.auth import get_current_user
-from app.domain.models.email_sender_school import EmailSenderSchool
-from app.domain.dtos.email_sender_school.email_sender_school_input import (
-    EmailSenderSchoolInput
+from app.domain.models.email_sender_headquarters import EmailSenderHeadquarters
+from app.domain.dtos.email_sender_headquarters.email_sender_headquarters_input import (  # noqa: E501 ignora error flake8
+    EmailSenderHeadquartersInput
 )
-
-from app.service.email_sender_school_service import EmailSenderSchoolService
+from app.service.email_sender_headquarters_service import (
+    EmailSenderHeadquartersService
+)
 
 router = APIRouter(
-    prefix="/email_sender_schools",
-    tags=["Email Sender School"]
+    prefix="/email_sender_headquarters",
+    tags=["Email Sender Headquarters"]
 )
 
 
-@router.get("/", response_model=List[EmailSenderSchool])
+@router.get("/", response_model=List[EmailSenderHeadquarters])
 def list_associations(
     session: Session = Depends(get_session),
     user_email: str = Depends(get_current_user)
 ):
-    return EmailSenderSchoolService.get_all(session)
+    return EmailSenderHeadquartersService.get_all(session)
 
 
-@router.get("/{sender_id}/{cod_school}", response_model=EmailSenderSchool)
+@router.get(
+    "/{sender_id}/{cod_headquarters}",
+    response_model=EmailSenderHeadquarters
+)
 def get_association(
     sender_id: str,
-    cod_school: str,
+    cod_headquarters: str,
     session: Session = Depends(get_session),
     user_email: str = Depends(get_current_user)
 ):
-    assoc = EmailSenderSchoolService.get_by_ids(sender_id, cod_school, session)
+    assoc = EmailSenderHeadquartersService.get_by_ids(
+        sender_id, cod_headquarters, session
+    )
     if not assoc:
         raise HTTPException(status_code=404, detail="Association not found")
     return assoc
@@ -40,27 +46,29 @@ def get_association(
 
 @router.post(
     "/",
-    response_model=EmailSenderSchool,
+    response_model=EmailSenderHeadquarters,
     status_code=status.HTTP_201_CREATED
 )
 def create_association(
-    data: EmailSenderSchoolInput,
+    data: EmailSenderHeadquartersInput,
     session: Session = Depends(get_session),
     user_email: str = Depends(get_current_user)
 ):
-    return EmailSenderSchoolService.create(data, session)
+    return EmailSenderHeadquartersService.create(data, session)
 
 
 @router.delete(
-    "/{sender_id}/{cod_school}",
+    "/{sender_id}/{cod_headquarters}",
     status_code=status.HTTP_204_NO_CONTENT
 )
 def delete_association(
     sender_id: str,
-    cod_school: str,
+    cod_headquarters: str,
     session: Session = Depends(get_session),
     user_email: str = Depends(get_current_user)
 ):
-    deleted = EmailSenderSchoolService.delete(sender_id, cod_school, session)
+    deleted = EmailSenderHeadquartersService.delete(
+        sender_id, cod_headquarters, session
+    )
     if not deleted:
         raise HTTPException(status_code=404, detail="Association not found")
