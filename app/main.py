@@ -12,7 +12,8 @@ from .controllers import (
     school_headquarters_associate_controller,
     type_user_controller,
     type_user_association_controller,
-    email_sender_controller
+    email_sender_controller,
+    email_sender_unit_controller
 )
 
 from fastapi import FastAPI
@@ -39,3 +40,4 @@ app.include_router(school_headquarters_associate_controller.router)
 app.include_router(type_user_controller.router)
 app.include_router(type_user_association_controller.router)
 app.include_router(email_sender_controller.router)
+app.include_router(email_sender_unit_controller.router)
