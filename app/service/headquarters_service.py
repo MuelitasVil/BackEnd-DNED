@@ -1,0 +1,44 @@
+from sqlalchemy.orm import Session
+from typing import List, Optional
+
+from app.repository.headquarters_repository import HeadquartersRepository
+from app.domain.models.headquarters import Headquarters
+from app.domain.dtos.headquarters.headquarters_input import HeadquartersInput
+
+
+class HeadquartersService:
+    @staticmethod
+    def get_all(session: Session) -> List[Headquarters]:
+        return HeadquartersRepository(session).get_all()
+
+    @staticmethod
+    def get_by_id(
+        cod_headquarters: str,
+        session: Session
+    ) -> Optional[Headquarters]:
+        return HeadquartersRepository(session).get_by_id(
+            cod_headquarters
+        )
+
+    @staticmethod
+    def create(
+        input_data: HeadquartersInput,
+        session: Session
+    ) -> Headquarters:
+        hq = Headquarters(**input_data.model_dump(exclude_unset=True))
+        return HeadquartersRepository(session).create(hq)
+
+    @staticmethod
+    def update(
+        cod_headquarters: str,
+        input_data: HeadquartersInput,
+        session: Session
+    ) -> Optional[Headquarters]:
+        return HeadquartersRepository(session).update(
+            cod_headquarters,
+            input_data
+        )
+
+    @staticmethod
+    def delete(cod_headquarters: str, session: Session) -> bool:
+        return HeadquartersRepository(session).delete(cod_headquarters)
