@@ -5,7 +5,8 @@ from .controllers import (
     user_workspace_associate_controller,
     user_unal_controller,
     unit_unal_controller,
-    user_unit_associate_controller
+    user_unit_associate_controller,
+    school_controller
 )
 
 from fastapi import FastAPI
@@ -24,5 +25,5 @@ app.include_router(user_workspace_controller.router)
 app.include_router(user_workspace_associate_controller.router)
 app.include_router(user_unal_controller.router)
 app.include_router(unit_unal_controller.router)
-app.include_router(user_unit_associate_controller.router)   
-
+app.include_router(user_unit_associate_controller.router)
+app.include_router(school_controller.router)
