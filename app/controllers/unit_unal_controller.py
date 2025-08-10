@@ -6,7 +6,7 @@ from app.configuration.database import get_session
 from app.utils.auth import get_current_user
 from app.domain.models.unit_unal import UnitUnal
 from app.domain.dtos.unit_unal.unit_unal_input import UnitUnalInput
-from app.service.unit_unal_service import UnitUnalService
+from app.service.crud.unit_unal_service import UnitUnalService
 
 router = APIRouter(prefix="/units_unal", tags=["Units UNAL"])
 

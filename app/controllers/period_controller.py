@@ -7,7 +7,7 @@ from typing import List
 from app.configuration.database import get_session
 from app.domain.models.period import Period
 from app.domain.dtos.period.period_input import PeriodInput
-from app.service.period_service import PeriodService
+from app.service.crud.period_service import PeriodService
 from app.utils.auth import get_current_user  # <--- autenticación
 
 router = APIRouter(prefix="/periods", tags=["Periods"])

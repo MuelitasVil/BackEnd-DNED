@@ -8,7 +8,9 @@ from app.domain.models.user_unit_associate import UserUnitAssociate
 from app.domain.dtos.user_unit_associate.user_unit_associate_input import (
     UserUnitAssociateInput
 )
-from app.service.user_unit_associate_service import UserUnitAssociateService
+from app.service.crud.user_unit_associate_service import (
+    UserUnitAssociateService,
+)
 
 router = APIRouter(
     prefix="/user_unit_associates",

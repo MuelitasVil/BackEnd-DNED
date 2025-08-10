@@ -6,7 +6,7 @@ from app.configuration.database import get_session
 from app.utils.auth import get_current_user
 from app.domain.models.school import School
 from app.domain.dtos.school.school_input import SchoolInput
-from app.service.school_service import SchoolService
+from app.service.crud.school_service import SchoolService
 
 router = APIRouter(prefix="/schools", tags=["Schools"])
 

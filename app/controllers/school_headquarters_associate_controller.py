@@ -10,7 +10,7 @@ from app.domain.models.school_headquarters_associate import (
 from app.domain.dtos.school_headquarters_associate.school_headquarters_associate_input import (  # noqa: E501 ignora error flake8
     SchoolHeadquartersAssociateInput
 )
-from app.service.school_headquarters_associate_service import (
+from app.service.crud.school_headquarters_associate_service import (
     SchoolHeadquartersAssociateService
 )
 

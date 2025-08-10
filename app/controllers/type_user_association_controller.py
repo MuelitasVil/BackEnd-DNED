@@ -8,7 +8,7 @@ from app.domain.models.type_user_association import TypeUserAssociation
 from app.domain.dtos.type_user_association.type_user_association_input import (
     TypeUserAssociationInput
 )
-from app.service.type_user_association_service import (
+from app.service.crud.type_user_association_service import (
     TypeUserAssociationService
 )
 

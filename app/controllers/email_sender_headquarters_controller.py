@@ -8,7 +8,7 @@ from app.domain.models.email_sender_headquarters import EmailSenderHeadquarters
 from app.domain.dtos.email_sender_headquarters.email_sender_headquarters_input import (  # noqa: E501 ignora error flake8
     EmailSenderHeadquartersInput
 )
-from app.service.email_sender_headquarters_service import (
+from app.service.crud.email_sender_headquarters_service import (
     EmailSenderHeadquartersService
 )
 

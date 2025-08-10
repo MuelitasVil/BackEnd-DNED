@@ -6,7 +6,7 @@ from app.configuration.database import get_session
 from app.utils.auth import get_current_user
 from app.domain.models.email_sender import EmailSender
 from app.domain.dtos.email_sender.email_sender_input import EmailSenderInput
-from app.service.email_sender_service import EmailSenderService
+from app.service.crud.email_sender_service import EmailSenderService
 
 router = APIRouter(prefix="/email_senders", tags=["Email Senders"])
 

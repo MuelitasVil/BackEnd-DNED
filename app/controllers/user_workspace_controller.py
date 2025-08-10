@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from typing import List
 
 from app.configuration.database import get_session
-from app.service.user_workspace_service import UserWorkspaceService
+from app.service.crud.user_workspace_service import UserWorkspaceService
 from app.domain.models.user_workspace import UserWorkspace
 from app.domain.dtos.user_workspace.user_workspace_input import (
     UserWorkspaceInput,

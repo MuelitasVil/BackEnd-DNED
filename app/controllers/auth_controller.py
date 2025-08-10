@@ -1,7 +1,7 @@
 from app.domain.dtos.auth.register_input import RegisterInput
 
 from app.domain.dtos.auth.login_input import LoginInput
-from app.service.auth_service import AuthService
+from app.service.crud.auth_service import AuthService
 
 from fastapi import APIRouter, Depends, HTTPException
 

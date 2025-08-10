@@ -8,7 +8,7 @@ from app.domain.models.email_sender_unit import EmailSenderUnit
 from app.domain.dtos.email_sender_unit.email_sender_unit_input import (
     EmailSenderUnitInput,
 )
-from app.service.email_sender_unit_service import EmailSenderUnitService
+from app.service.crud.email_sender_unit_service import EmailSenderUnitService
 
 router = APIRouter(prefix="/email_sender_units", tags=["Email Sender Unit"])
 

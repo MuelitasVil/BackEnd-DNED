@@ -8,7 +8,7 @@ from app.domain.models.unit_school_associate import UnitSchoolAssociate
 from app.domain.dtos.unit_school_associate.unit_school_associate_input import (
     UnitSchoolAssociateInput,
 )
-from app.service.unit_school_associate_service import (
+from app.service.crud.unit_school_associate_service import (
     UnitSchoolAssociateService,
 )
 

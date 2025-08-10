@@ -5,7 +5,7 @@ from typing import List
 from app.configuration.database import get_session
 from app.domain.models.user_unal import UserUnal
 from app.domain.dtos.user_unal.user_unal_input import UserUnalInput
-from app.service.user_unal_service import UserUnalService
+from app.service.crud.user_unal_service import UserUnalService
 from app.utils.auth import get_current_user
 
 router = APIRouter(prefix="/users_unal", tags=["Users UNAL"])

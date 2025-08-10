@@ -6,7 +6,7 @@ from app.configuration.database import get_session
 from app.utils.auth import get_current_user
 from app.domain.models.type_user import TypeUser
 from app.domain.dtos.type_user.type_user_input import TypeUserInput
-from app.service.type_user_service import TypeUserService
+from app.service.crud.type_user_service import TypeUserService
 
 router = APIRouter(prefix="/type_users", tags=["Type Users"])
 

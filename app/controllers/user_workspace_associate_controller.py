@@ -7,7 +7,7 @@ from app.domain.models.user_workspace_associate import UserWorkspaceAssociate
 from app.domain.dtos.user_workspace_associate.user_workspace_associate_input import (  # noqa: E501 ignora error flake8
     UserWorkspaceAssociateInput
 ) 
-from app.service.user_workspace_associate_service import (
+from app.service.crud.user_workspace_associate_service import (
     UserWorkspaceAssociateService
 )
 from app.utils.auth import get_current_user

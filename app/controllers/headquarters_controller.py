@@ -6,7 +6,7 @@ from app.configuration.database import get_session
 from app.utils.auth import get_current_user
 from app.domain.models.headquarters import Headquarters
 from app.domain.dtos.headquarters.headquarters_input import HeadquartersInput
-from app.service.headquarters_service import HeadquartersService
+from app.service.crud.headquarters_service import HeadquartersService
 
 router = APIRouter(prefix="/headquarters", tags=["Headquarters"])
 

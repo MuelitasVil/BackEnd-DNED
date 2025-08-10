@@ -9,7 +9,9 @@ from app.domain.dtos.email_sender_school.email_sender_school_input import (
     EmailSenderSchoolInput
 )
 
-from app.service.email_sender_school_service import EmailSenderSchoolService
+from app.service.crud.email_sender_school_service import (
+    EmailSenderSchoolService,
+)
 
 router = APIRouter(
     prefix="/email_sender_schools",
