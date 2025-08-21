@@ -50,3 +50,21 @@ class HeadquartersService:
     @staticmethod
     def delete(cod_headquarters: str, session: Session) -> bool:
         return HeadquartersRepository(session).delete(cod_headquarters)
+
+    @staticmethod
+    def bulk_insert_ignore(
+        users: List[HeadquartersInput],
+        session: Session
+    ):
+        """
+        Inserta en bulk usuarios.
+        Si hay duplicados en email_unal, MySQL los ignora.
+        """
+        user_models = [
+            Headquarters(**u.model_dump(exclude_unset=True))
+            for u in users
+        ]
+        HeadquartersRepository(session).bulk_insert_ignore(
+            user_models
+        )
+        return {"inserted": len(users), "duplicates_ignored": True}

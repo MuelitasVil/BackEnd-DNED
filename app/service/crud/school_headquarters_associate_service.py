@@ -85,7 +85,7 @@ class SchoolHeadquartersAssociateService:
             cod_school,
             cod_headquarter,
             cod_period
-    )
+        )
 
     @staticmethod
     def bulk_insert_ignore(

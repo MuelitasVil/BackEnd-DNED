@@ -163,6 +163,14 @@ def case_estudiantes_activos(
         }
 
     UserUnalService.bulk_insert_ignore(users, session)
+    UnitUnalService.bulk_insert_ignore(units, session)
+    SchoolService.bulk_insert_ignore(schools, session)
+    HeadquartersService.bulk_insert_ignore(headquarters, session)
+    UserUnitAssociateService.bulk_insert_ignore(userUnitAssocs, session)
+    UnitSchoolAssociateService.bulk_insert_ignore(unitSchoolAssocs, session)
+    SchoolHeadquartersAssociateService.bulk_insert_ignore(
+        schoolHeadquartersAssocs, session
+    )
 
     for unit in units:
         UnitUnalService.save(unit, session)

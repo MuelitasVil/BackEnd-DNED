@@ -39,3 +39,21 @@ class SchoolService:
     @staticmethod
     def delete(cod_school: str, session: Session) -> bool:
         return SchoolRepository(session).delete(cod_school)
+    
+    @staticmethod
+    def bulk_insert_ignore(
+        users: List[SchoolInput],
+        session: Session
+    ):
+        """
+        Inserta en bulk usuarios.
+        Si hay duplicados en email_unal, MySQL los ignora.
+        """
+        user_models = [
+            School(**u.model_dump(exclude_unset=True))
+            for u in users
+        ]
+        SchoolRepository(session).bulk_insert_ignore(
+            user_models
+        )
+        return {"inserted": len(users), "duplicates_ignored": True}
