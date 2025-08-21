@@ -1,6 +1,8 @@
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
+from app.domain.dtos.school.school_input import SchoolInput
+from app.domain.dtos.unit_unal.unit_unal_input import UnitUnalInput
 from app.repository.unit_school_associate_repository import (
     UnitSchoolAssociateRepository,
 )
@@ -8,6 +10,8 @@ from app.domain.models.unit_school_associate import UnitSchoolAssociate
 from app.domain.dtos.unit_school_associate.unit_school_associate_input import (
     UnitSchoolAssociateInput
 )
+from app.service.crud.school_service import SchoolService
+from app.service.crud.unit_unal_service import UnitUnalService
 
 
 class UnitSchoolAssociateService:
@@ -25,6 +29,30 @@ class UnitSchoolAssociateService:
         return UnitSchoolAssociateRepository(session).get_by_ids(
             cod_unit, cod_school, cod_period
         )
+
+    @staticmethod
+    def saveWithUnitAndSchool(
+        unitInput: UnitUnalInput,
+        schoolInput: SchoolInput,
+        cod_period: str,
+        session: Session
+    ) -> UnitSchoolAssociate:
+        association = UnitSchoolAssociate(
+            unitInput.cod_unit,
+            schoolInput.cod_school,
+            cod_period=cod_period
+        )
+
+        if not (
+            UnitUnalService.get_by_id(unitInput.cod_unit, session)
+            and SchoolService.get_by_id(schoolInput.cod_school, session)
+        ):
+            return None
+
+        if UnitSchoolAssociateRepository(session).exists(association):
+            return None
+
+        return UnitSchoolAssociateRepository(session).create(association)
 
     @staticmethod
     def create(

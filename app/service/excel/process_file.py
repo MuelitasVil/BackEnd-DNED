@@ -1,18 +1,29 @@
-def process_file(file_path: str, expected_headers: List[str]) -> bool:
-    """
-    Verifies the uploaded Excel file by checking its headers.
+from openpyxl import Workbook, worksheet
+from app.domain.enums.files.estudiante_activos import EstudianteActivos
+from app.service.excel.case_estudiantes_activos import case_estudiantes_activos
+from fastapi import HTTPException
 
-    Args:
-        file_path (str): The path to the Excel file.
-        expected_headers (List[str]): The list of expected headers.
 
-    Returns:
-        bool: True if the file is valid, False otherwise.
-    """
-    try:
-        df = pd.read_excel(file_path)
-        actual_headers = df.columns.tolist()
-        return actual_headers == expected_headers
-    except Exception as e:
-        print(f"Error verifying file: {e}")
+def process_file(file: Workbook, cod_period: str) -> bool:
+    first_sheet_name: str = file.sheetnames[0]
+    ws: worksheet = file[first_sheet_name]
+
+    headers = get_headers(ws)
+    if not headers:
         return False
+
+    if EstudianteActivos.validate_headers(headers):
+        return case_estudiantes_activos(ws, cod_period)
+
+    raise HTTPException(status_code=400, detail={
+        "error": f"La hoja {first_sheet_name} no tiene una estructura válida",
+        "headers": headers,
+        "message": (
+            "El programa siempre toma la primera hoja, verifique si la "
+            "primera hoja es la que contiene la información"
+        )
+    })
+
+
+def get_headers(ws: worksheet) -> list[str]:
+    return [cell.value for cell in ws[1]]

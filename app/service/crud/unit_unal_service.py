@@ -14,7 +14,7 @@ class UnitUnalService:
     @staticmethod
     def get_by_id(cod_unit: str, session: Session) -> Optional[UnitUnal]:
         return UnitUnalRepository(session).get_by_id(cod_unit)
-
+    
     @staticmethod
     def create(input_data: UnitUnalInput, session: Session) -> UnitUnal:
         unit = UnitUnal(**input_data.model_dump(exclude_unset=True))
@@ -27,6 +27,14 @@ class UnitUnalService:
         session: Session
     ) -> Optional[UnitUnal]:
         return UnitUnalRepository(session).update(cod_unit, input_data)
+
+    @staticmethod
+    def save(input_data: UnitUnalInput, session: Session) -> UnitUnal:
+        if UnitUnalService.get_by_id(input_data.cod_unit, session):
+            return UnitUnalService.update(
+                input_data.cod_unit, input_data, session
+            )
+        return UnitUnalService.create(input_data, session)
 
     @staticmethod
     def delete(cod_unit: str, session: Session) -> bool:

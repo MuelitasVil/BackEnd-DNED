@@ -30,6 +30,7 @@ def read_root():
 
 
 app.include_router(auth_controller.router)
+app.include_router(upload_controller.router)
 app.include_router(period_controller.router)
 app.include_router(user_workspace_controller.router)
 app.include_router(user_workspace_associate_controller.router)
@@ -46,4 +47,3 @@ app.include_router(email_sender_controller.router)
 app.include_router(email_sender_unit_controller.router)
 app.include_router(email_sender_school_controller.router)
 app.include_router(email_sender_headquarters_controller.router)
-app.include_router(upload_controller.router)

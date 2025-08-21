@@ -29,5 +29,13 @@ class SchoolService:
         return SchoolRepository(session).update(cod_school, input_data)
 
     @staticmethod
+    def save(input_data: SchoolInput, session: Session) -> School:
+        if SchoolService.get_by_id(input_data.cod_school, session):
+            return SchoolService.update(
+                input_data.cod_school, input_data, session
+            )
+        return SchoolService.create(input_data, session)
+
+    @staticmethod
     def delete(cod_school: str, session: Session) -> bool:
         return SchoolRepository(session).delete(cod_school)

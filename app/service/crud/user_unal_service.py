@@ -29,5 +29,13 @@ class UserUnalService:
         return UserUnalRepository(session).update(email_unal, input_data)
 
     @staticmethod
+    def save(input_data: UserUnalInput, session: Session) -> UserUnal:
+        if UserUnalService.get_by_email(input_data.email_unal, session):
+            return UserUnalService.update(
+                input_data.email_unal, input_data, session
+            )
+        return UserUnalService.create(input_data, session)
+
+    @staticmethod
     def delete(email_unal: str, session: Session) -> bool:
         return UserUnalRepository(session).delete(email_unal)

@@ -1,15 +1,19 @@
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
+from app.domain.dtos.headquarters.headquarters_input import HeadquartersInput
+from app.domain.dtos.school.school_input import SchoolInput
 from app.repository.school_headquarters_associate_repository import (
     SchoolHeadquartersAssociateRepository
 )
 from app.domain.models.school_headquarters_associate import (
     SchoolHeadquartersAssociate
 )
-from app.domain.dtos.school_headquarters_associate.school_headquarters_associate_input import (  # noqa: E501 ignora error flake8
+from app.domain.dtos.school_headquarters_associate.school_headquarters_associate_input import (   # noqa: E501 ignora error flake8
     SchoolHeadquartersAssociateInput
 )
+from app.service.crud.headquarters_service import HeadquartersService
+from app.service.crud.school_service import SchoolService
 
 
 class SchoolHeadquartersAssociateService:
@@ -28,6 +32,34 @@ class SchoolHeadquartersAssociateService:
             cod_school,
             cod_headquarters,
             cod_period
+        )
+
+    @staticmethod
+    def saveWithSchoolAndHeadquarters(
+        schoolInput: SchoolInput,
+        headquartersInput: HeadquartersInput,
+        cod_period: str,
+        session: Session
+    ) -> SchoolHeadquartersAssociate:
+        association = SchoolHeadquartersAssociate(
+            schoolInput.cod_school,
+            headquartersInput.cod_headquarters,
+            cod_period=cod_period
+        )
+
+        if not (
+            SchoolService.get_by_id(schoolInput.cod_school, session)
+            and HeadquartersService.get_by_id(
+                headquartersInput.cod_headquarters, session
+            )
+        ):
+            return None
+
+        if SchoolHeadquartersAssociateRepository(session).exists(association):
+            return None
+
+        return SchoolHeadquartersAssociateRepository(session).create(
+            association
         )
 
     @staticmethod

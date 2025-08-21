@@ -1,6 +1,8 @@
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
+from app.domain.dtos.unit_unal.unit_unal_input import UnitUnalInput
+from app.domain.dtos.user_unal.user_unal_input import UserUnalInput
 from app.repository.user_unit_associate_repository import (
     UserUnitAssociateRepository,
 )
@@ -8,6 +10,8 @@ from app.domain.models.user_unit_associate import UserUnitAssociate
 from app.domain.dtos.user_unit_associate.user_unit_associate_input import (
     UserUnitAssociateInput
 )
+from app.service.crud.unit_unal_service import UnitUnalService
+from app.service.crud.user_unal_service import UserUnalService
 
 
 class UserUnitAssociateService:
@@ -27,6 +31,29 @@ class UserUnitAssociateService:
             cod_unit,
             cod_period
         )
+
+    @staticmethod
+    def saveWithUserAndUnit(
+        userInput: UserUnalInput,
+        unitInput: UnitUnalInput,
+        cod_period: str,
+        session: Session
+    ) -> UserUnitAssociate:
+        association = UserUnitAssociate(
+            userInput.email_unal,
+            unitInput.cod_unit,
+            cod_period=cod_period
+        )
+        if not (
+            UserUnalService.get_by_email(userInput.email_unal, session)
+            and UnitUnalService.get_by_id(unitInput.cod_unit, session)
+        ):
+            return None
+
+        if UserUnitAssociateRepository(session).exists(association):
+            return None
+
+        return UserUnitAssociateRepository(session).create(association)
 
     @staticmethod
     def create(

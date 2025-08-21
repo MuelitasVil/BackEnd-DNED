@@ -40,5 +40,13 @@ class HeadquartersService:
         )
 
     @staticmethod
+    def save(input_data: HeadquartersInput, session: Session) -> Headquarters:
+        if HeadquartersService.get_by_id(input_data.cod_headquarters, session):
+            return HeadquartersService.update(
+                input_data.cod_headquarters, input_data, session
+            )
+        return HeadquartersService.create(input_data, session)
+
+    @staticmethod
     def delete(cod_headquarters: str, session: Session) -> bool:
         return HeadquartersRepository(session).delete(cod_headquarters)
