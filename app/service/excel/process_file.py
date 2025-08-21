@@ -1,10 +1,11 @@
 from openpyxl import Workbook, worksheet
+from pytest import Session
 from app.domain.enums.files.estudiante_activos import EstudianteActivos
 from app.service.excel.case_estudiantes_activos import case_estudiantes_activos
 from fastapi import HTTPException
 
 
-def process_file(file: Workbook, cod_period: str) -> bool:
+def process_file(file: Workbook, cod_period: str, session: Session) -> bool:
     first_sheet_name: str = file.sheetnames[0]
     ws: worksheet = file[first_sheet_name]
 
@@ -13,7 +14,7 @@ def process_file(file: Workbook, cod_period: str) -> bool:
         return False
 
     if EstudianteActivos.validate_headers(headers):
-        return case_estudiantes_activos(ws, cod_period)
+        return case_estudiantes_activos(ws, cod_period, session)
 
     raise HTTPException(status_code=400, detail={
         "error": f"La hoja {first_sheet_name} no tiene una estructura válida",

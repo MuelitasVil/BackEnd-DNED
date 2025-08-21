@@ -42,17 +42,18 @@ from app.domain.enums.files.estudiante_activos import (
     TypesEstudiante
 )
 
-from app.configuration.database import get_session
 from app.service.crud.user_unal_service import UserUnalService
 from app.service.crud.unit_unal_service import UnitUnalService
 from app.service.crud.school_service import SchoolService
 from app.service.crud.headquarters_service import HeadquartersService
 
-session: Session = get_session()
-
 
 # --------- validación principal y armado de colecciones ---------
-def case_estudiantes_activos(ws: Worksheet, cod_period: str) -> Dict[str, Any]:
+def case_estudiantes_activos(
+    ws: Worksheet,
+    cod_period: str,
+    session: Session
+) -> Dict[str, Any]:
     """
     - Valida filas vacías y celdas vacías (según Enum).
     - Construye listas de DTOs (sin duplicados por código).
@@ -65,15 +66,15 @@ def case_estudiantes_activos(ws: Worksheet, cod_period: str) -> Dict[str, Any]:
     headquarters: List[HeadquartersInput] = []
     userUnitAssocs: List[UserUnitAssociateInput] = []
     unitSchoolAssocs: List[UnitSchoolAssociateInput] = []
-    schoolHeadAssocs: List[SchoolHeadquartersAssociateInput] = []
+    schoolHeadquartersAssocs: List[SchoolHeadquartersAssociateInput] = []
 
     seen_units: Set[str] = set()
     seen_schools: Set[str] = set()
     seen_heads: Set[str] = set()
     seen_users: Set[str] = set()
-    seen_user_unit_assocs: Set[UserUnitAssociateInput] = set()
-    seen_unit_school_assocs: Set[UnitSchoolAssociateInput] = set()
-    seen_school_head_assocs: Set[SchoolHeadquartersAssociateInput] = set()
+    seen_user_unit_assocs: Set[str] = set()
+    seen_unit_school_assocs: Set[str] = set()
+    seen_school_head_assocs: Set[str] = set()
 
     # recorre todas las filas (incluye encabezados en row 1)
     for row_idx, row in enumerate(ws.iter_rows(), start=1):
@@ -118,27 +119,42 @@ def case_estudiantes_activos(ws: Worksheet, cod_period: str) -> Dict[str, Any]:
             cod_unit=unit.cod_unit,
             cod_period=cod_period
         )
-        if userUnitAssoc not in seen_user_unit_assocs:
+        if (
+            f"{user.email_unal}{unit.cod_unit}{cod_period}"
+            not in seen_user_unit_assocs
+        ):
+            seen_user_unit_assocs.add(
+                f"{user.email_unal}{unit.cod_unit}{cod_period}"
+            )
             userUnitAssocs.append(userUnitAssoc)
-            seen_user_unit_assocs.add(userUnitAssoc)
 
         unitSchoolAssoc = UnitSchoolAssociateInput(
             cod_unit=unit.cod_unit,
             cod_school=school.cod_school,
             cod_period=cod_period
         )
-        if unitSchoolAssoc not in seen_unit_school_assocs:
+        if (
+            f"{unit.cod_unit}{school.cod_school}{cod_period}"
+            not in seen_unit_school_assocs
+        ):
+            seen_unit_school_assocs.add(
+                f"{unit.cod_unit}{school.cod_school}{cod_period}"
+            )
             unitSchoolAssocs.append(unitSchoolAssoc)
-            seen_unit_school_assocs.add(unitSchoolAssoc)
 
         schoolHeadAssoc = SchoolHeadquartersAssociateInput(
             cod_school=school.cod_school,
             cod_headquarters=head.cod_headquarters,
             cod_period=cod_period
         )
-        if schoolHeadAssoc not in seen_school_head_assocs:
-            schoolHeadAssocs.append(schoolHeadAssoc)
-            seen_school_head_assocs.add(schoolHeadAssoc)
+        if (
+            f"{school.cod_school}{head.cod_headquarters}{cod_period}"
+            not in seen_school_head_assocs
+        ):
+            seen_school_head_assocs.add(
+                f"{school.cod_school}{head.cod_headquarters}{cod_period}"
+            )
+            schoolHeadquartersAssocs.append(schoolHeadAssoc)
 
     if errors:
         return {
@@ -176,7 +192,7 @@ def case_estudiantes_activos(ws: Worksheet, cod_period: str) -> Dict[str, Any]:
         ):
             UnitSchoolAssociateService.create(unitSchoolAssoc, session)
 
-    for schoolHeadAssoc in schoolHeadAssocs:
+    for schoolHeadAssoc in schoolHeadquartersAssocs:
         if not SchoolHeadquartersAssociateService.get_by_ids(
             schoolHeadAssoc.cod_school,
             schoolHeadAssoc.cod_headquarters,
@@ -185,24 +201,29 @@ def case_estudiantes_activos(ws: Worksheet, cod_period: str) -> Dict[str, Any]:
         ):
             SchoolHeadquartersAssociateService.create(schoolHeadAssoc, session)
 
-    status_ok = len(errors) == 0
     return {
-        "status": status_ok,
-        "errors": errors,
+        "status": True,
+        "cant_users": len(users),
+        "cant_units": len(units),
+        "cant_schools": len(schools),
+        "cant_headquarters": len(headquarters),
+        "cant_user_unit_assocs": len(userUnitAssocs),
+        "cant_unit_school_assocs": len(unitSchoolAssocs),
+        "cant_school_head_assocs": len(schoolHeadquartersAssocs),
     }
 
 
 def get_user_from_row(row: Tuple[Cell, ...]) -> UserUnalInput:
     return UserUnalInput(
-        email=(
-            get_value_from_row(row, EstudianteActivos.EMAIL) or None
+        email_unal=(
+            get_value_from_row(row, EstudianteActivos.EMAIL.value) or None
         ),
         document=None,
         name=None,
         lastname=None,
         full_name=(
             get_value_from_row(
-                row, EstudianteActivos.NOMBRES_APELLIDOS
+                row, EstudianteActivos.NOMBRES_APELLIDOS.value
             ) or None
         ),
         gender=None,
@@ -211,9 +232,11 @@ def get_user_from_row(row: Tuple[Cell, ...]) -> UserUnalInput:
 
 
 def get_unit_from_row(row: Tuple[Cell, ...]) -> UnitUnalInput:
-    cod_unit: str = get_value_from_row(row, EstudianteActivos.COD_PLAN)
-    plan: str = get_value_from_row(row, EstudianteActivos.PLAN)
-    tipo_nivel: str = get_value_from_row(row, EstudianteActivos.TIPO_NIVEL)
+    cod_unit: str = get_value_from_row(row, EstudianteActivos.COD_PLAN.value)
+    plan: str = get_value_from_row(row, EstudianteActivos.PLAN.value)
+    tipo_nivel: str = get_value_from_row(
+        row, EstudianteActivos.TIPO_NIVEL.value
+    )
     email: str = f"{cod_unit}@unal.edu.co"
     return UnitUnalInput(
         cod_unit=cod_unit,
@@ -225,10 +248,10 @@ def get_unit_from_row(row: Tuple[Cell, ...]) -> UnitUnalInput:
 
 
 def get_school_from_row(row: Tuple[Cell, ...]) -> SchoolInput:
-    facultad: str = get_value_from_row(row, EstudianteActivos.FACULTAD)
-    sede: str = get_value_from_row(row, EstudianteActivos.SEDE)
+    facultad: str = get_value_from_row(row, EstudianteActivos.FACULTAD.value)
+    sede: str = get_value_from_row(row, EstudianteActivos.SEDE.value)
     tipoEstudiante: str = get_value_from_row(
-        row, EstudianteActivos.TIPO_NIVEL
+        row, EstudianteActivos.TIPO_NIVEL.value
     )
     cod_school: str = ""
     if (
@@ -261,11 +284,13 @@ def get_headquarters_from_row(row: Tuple[Cell, ...]) -> HeadquartersInput:
     elif tipoEstudiante == General_Values.POSGRADO:
         tipoEstudiante = "pos"
 
-    sede: str = get_value_from_row(row, EstudianteActivos.SEDE)
+    sede: str = get_value_from_row(row, EstudianteActivos.SEDE.value)
     prefix_sede: str = sede[1][:3].lower()
     cod_sede: str = f"estudiante{tipoEstudiante}_{prefix_sede}"
     type_facultad: str = f"estudiante_{prefix_sede}"
-    tipoEstudiante: str = get_value_from_row(row, EstudianteActivos.TIPO_NIVEL)
+    tipoEstudiante: str = get_value_from_row(
+        row, EstudianteActivos.TIPO_NIVEL.value
+    )
     email: str = f"{cod_sede}@unal.edu.co"
 
     return HeadquartersInput(

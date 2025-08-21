@@ -49,7 +49,11 @@ class UnitSchoolAssociateService:
         ):
             return None
 
-        if UnitSchoolAssociateRepository(session).exists(association):
+        if UnitSchoolAssociateRepository(session).get_by_ids(
+            association.cod_unit,
+            association.cod_school,
+            association.cod_period
+        ):
             return None
 
         return UnitSchoolAssociateRepository(session).create(association)

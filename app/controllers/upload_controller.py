@@ -22,4 +22,4 @@ async def upload_excel_file(
 
     wb: Workbook = await readExcelFile(file)
     # Save the data in the excel in database
-    return process_file(wb, cod_period)
+    return process_file(wb, cod_period, session)

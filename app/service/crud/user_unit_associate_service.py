@@ -26,7 +26,7 @@ class UserUnitAssociateService:
         cod_period: str,
         session: Session
     ) -> Optional[UserUnitAssociate]:
-        return UserUnitAssociateRepository(session).get_by_ids(
+        return UserUnitAssociateRepository(session).get_by_keys(
             email_unal,
             cod_unit,
             cod_period

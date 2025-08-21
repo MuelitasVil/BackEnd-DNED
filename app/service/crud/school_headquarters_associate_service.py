@@ -55,7 +55,11 @@ class SchoolHeadquartersAssociateService:
         ):
             return None
 
-        if SchoolHeadquartersAssociateRepository(session).exists(association):
+        if SchoolHeadquartersAssociateRepository(session).get_by_ids(
+            association.cod_school,
+            association.cod_headquarters,
+            association.cod_period
+        ):
             return None
 
         return SchoolHeadquartersAssociateRepository(session).create(
