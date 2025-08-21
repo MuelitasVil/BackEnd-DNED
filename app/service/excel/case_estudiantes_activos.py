@@ -162,8 +162,7 @@ def case_estudiantes_activos(
             "errors": errors
         }
 
-    for user in users:
-        UserUnalService.save(user, session)
+    UserUnalService.bulk_insert_ignore(users, session)
 
     for unit in units:
         UnitUnalService.save(unit, session)

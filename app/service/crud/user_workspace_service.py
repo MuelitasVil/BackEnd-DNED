@@ -39,3 +39,22 @@ class UserWorkspaceService:
     @staticmethod
     def delete(workspace_id: str, session: Session) -> bool:
         return UserWorkspaceRepository(session).delete(workspace_id)
+
+    @staticmethod
+    def bulk_insert_ignore(
+        users: List[UserWorkspaceInput],
+        session: Session
+    ):
+        """
+        Inserta en bulk usuarios.
+        Si hay duplicados en email_unal, MySQL los ignora.
+        """
+        user_models = [
+            UserWorkspace(
+                user_workspace_id=generate_uuid(),
+                **u.model_dump(exclude_unset=True)
+            )
+            for u in users
+        ]
+        UserWorkspaceRepository(session).bulk_insert_ignore(user_models)
+        return {"inserted": len(users), "duplicates_ignored": True}

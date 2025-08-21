@@ -1,5 +1,6 @@
-from sqlmodel import Session, select
 from typing import List, Optional
+from sqlmodel import Session, select
+from sqlalchemy.dialects.mysql import insert
 
 from app.domain.models.user_unal import UserUnal
 from app.domain.dtos.user_unal.user_unal_input import UserUnalInput
@@ -46,3 +47,13 @@ class UserUnalRepository:
             self.session.commit()
             return True
         return False
+
+    def bulk_insert_ignore(self, users: List[UserUnal]):
+        """
+        Inserta múltiples usuarios en la tabla.
+        Si encuentra PK duplicada (email_unal), ignora ese registro.
+        """
+        stmt = insert(UserUnal).values([u.model_dump() for u in users])
+        stmt = stmt.prefix_with("IGNORE")
+        self.session.execute(stmt)
+        self.session.commit()

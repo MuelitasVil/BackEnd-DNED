@@ -75,3 +75,19 @@ class UserUnitAssociateService:
             cod_unit,
             cod_period
         )
+
+    @staticmethod
+    def bulk_insert_ignore(
+        users: List[UserUnitAssociateInput],
+        session: Session
+    ):
+        """
+        Inserta en bulk usuarios.
+        Si hay duplicados en email_unal, MySQL los ignora.
+        """
+        user_models = [
+            UserUnitAssociate(**u.model_dump(exclude_unset=True))
+            for u in users
+        ]
+        UserUnitAssociateRepository(session).bulk_insert_ignore(user_models)
+        return {"inserted": len(users), "duplicates_ignored": True}

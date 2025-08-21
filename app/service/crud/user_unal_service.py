@@ -1,5 +1,5 @@
-from sqlalchemy.orm import Session
 from typing import List, Optional
+from sqlmodel import Session
 
 from app.repository.user_unal_repository import UserUnalRepository
 from app.domain.models.user_unal import UserUnal
@@ -39,3 +39,16 @@ class UserUnalService:
     @staticmethod
     def delete(email_unal: str, session: Session) -> bool:
         return UserUnalRepository(session).delete(email_unal)
+
+    @staticmethod
+    def bulk_insert_ignore(users: List[UserUnalInput], session: Session):
+        """
+        Inserta en bulk usuarios.
+        Si hay duplicados en email_unal, MySQL los ignora.
+        """
+        user_models = [
+            UserUnal(**u.model_dump(exclude_unset=True))
+            for u in users
+        ]
+        UserUnalRepository(session).bulk_insert_ignore(user_models)
+        return {"inserted": len(users), "duplicates_ignored": True}

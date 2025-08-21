@@ -1,4 +1,5 @@
-from sqlmodel import Session, select
+from typing import List
+from sqlmodel import Session, insert, select
 from app.domain.models.user_workspace_associate import UserWorkspaceAssociate
 
 
@@ -26,4 +27,18 @@ class UserWorkspaceAssociateRepository:
 
     def delete(self, associate: UserWorkspaceAssociate):
         self.session.delete(associate)
+        self.session.commit()
+
+    def bulk_insert_ignore(
+        self, userWorkspaceAssociates: List[UserWorkspaceAssociate]
+    ):
+        """
+        Inserta múltiples usuarios en la tabla.
+        Si encuentra PK duplicada (email_unal), ignora ese registro.
+        """
+        stmt = insert(UserWorkspaceAssociate).values(
+            [u.model_dump() for u in userWorkspaceAssociates]
+        )
+        stmt = stmt.prefix_with("IGNORE")
+        self.session.exec(stmt)
         self.session.commit()

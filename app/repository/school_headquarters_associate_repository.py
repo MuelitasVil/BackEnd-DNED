@@ -1,4 +1,4 @@
-from sqlmodel import Session, select
+from sqlmodel import Session, insert, select
 from typing import List, Optional
 
 from app.domain.models.school_headquarters_associate import (
@@ -45,3 +45,17 @@ class SchoolHeadquartersAssociateRepository:
             self.session.commit()
             return True
         return False
+    
+    def bulk_insert_ignore(
+        self, unitUnal: List[SchoolHeadquartersAssociate]
+    ):
+        """
+        Inserta múltiples usuarios en la tabla.
+        Si encuentra PK duplicada (email_unal), ignora ese registro.
+        """
+        stmt = insert(SchoolHeadquartersAssociate).values(
+            [u.model_dump() for u in unitUnal]
+        )
+        stmt = stmt.prefix_with("IGNORE")
+        self.session.exec(stmt)
+        self.session.commit()

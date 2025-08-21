@@ -1,6 +1,7 @@
-# app/repository/user_workspace_repository.py
+from sqlalchemy import insert
 from sqlalchemy.orm import Session
 from app.domain.models.user_workspace import UserWorkspace
+from typing import List
 
 
 class UserWorkspaceRepository:
@@ -35,3 +36,17 @@ class UserWorkspaceRepository:
         self.session.delete(workspace)
         self.session.commit()
         return True
+
+    def bulk_insert_ignore(
+        self, unitUnal: List[UserWorkspace]
+    ):
+        """
+        Inserta múltiples usuarios en la tabla.
+        Si encuentra PK duplicada (email_unal), ignora ese registro.
+        """
+        stmt = insert(UserWorkspace).values(
+            [u.model_dump() for u in unitUnal]
+        )
+        stmt = stmt.prefix_with("IGNORE")
+        self.session.exec(stmt)
+        self.session.commit()

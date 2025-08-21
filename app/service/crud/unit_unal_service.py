@@ -14,7 +14,7 @@ class UnitUnalService:
     @staticmethod
     def get_by_id(cod_unit: str, session: Session) -> Optional[UnitUnal]:
         return UnitUnalRepository(session).get_by_id(cod_unit)
-    
+
     @staticmethod
     def create(input_data: UnitUnalInput, session: Session) -> UnitUnal:
         unit = UnitUnal(**input_data.model_dump(exclude_unset=True))
@@ -39,3 +39,16 @@ class UnitUnalService:
     @staticmethod
     def delete(cod_unit: str, session: Session) -> bool:
         return UnitUnalRepository(session).delete(cod_unit)
+
+    @staticmethod
+    def bulk_insert_ignore(users: List[UnitUnalInput], session: Session):
+        """
+        Inserta en bulk usuarios.
+        Si hay duplicados en email_unal, MySQL los ignora.
+        """
+        user_models = [
+            UnitUnal(**u.model_dump(exclude_unset=True))
+            for u in users
+        ]
+        UnitUnalRepository(session).bulk_insert_ignore(user_models)
+        return {"inserted": len(users), "duplicates_ignored": True}
