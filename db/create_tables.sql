@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS user_unit_associate (
 -- Tabla: school
 CREATE TABLE IF NOT EXISTS school (
     cod_school CHAR(50) PRIMARY KEY,
-    email VARCHAR(100)
+    email VARCHAR(100),
     name VARCHAR(100),
     description TEXT,
     type_facultad VARCHAR(50)

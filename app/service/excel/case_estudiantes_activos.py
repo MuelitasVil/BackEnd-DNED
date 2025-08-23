@@ -172,42 +172,6 @@ def case_estudiantes_activos(
         schoolHeadquartersAssocs, session
     )
 
-    for unit in units:
-        UnitUnalService.save(unit, session)
-
-    for school in schools:
-        SchoolService.save(school, session)
-
-    for head in headquarters:
-        HeadquartersService.save(head, session)
-
-    for userUnitAssoc in userUnitAssocs:
-        if not UserUnitAssociateService.get_by_ids(
-            userUnitAssoc.email_unal,
-            userUnitAssoc.cod_unit,
-            cod_period,
-            session
-        ):
-            UserUnitAssociateService.create(userUnitAssoc, session)
-
-    for unitSchoolAssoc in unitSchoolAssocs:
-        if not UnitSchoolAssociateService.get_by_ids(
-            unitSchoolAssoc.cod_unit,
-            unitSchoolAssoc.cod_school,
-            cod_period,
-            session
-        ):
-            UnitSchoolAssociateService.create(unitSchoolAssoc, session)
-
-    for schoolHeadAssoc in schoolHeadquartersAssocs:
-        if not SchoolHeadquartersAssociateService.get_by_ids(
-            schoolHeadAssoc.cod_school,
-            schoolHeadAssoc.cod_headquarters,
-            cod_period,
-            session
-        ):
-            SchoolHeadquartersAssociateService.create(schoolHeadAssoc, session)
-
     return {
         "status": True,
         "cant_users": len(users),
