@@ -47,6 +47,10 @@ from app.service.crud.unit_unal_service import UnitUnalService
 from app.service.crud.school_service import SchoolService
 from app.service.crud.headquarters_service import HeadquartersService
 
+from app.utils.app_logger import AppLogger 
+
+logger = AppLogger(__file__)
+
 
 # --------- validación principal y armado de colecciones ---------
 def case_estudiantes_activos(
@@ -76,11 +80,15 @@ def case_estudiantes_activos(
     seen_unit_school_assocs: Set[str] = set()
     seen_school_head_assocs: Set[str] = set()
 
+    logger.info("Iniciando procesamiento de archivo de estudiantes activos")
     # recorre todas las filas (incluye encabezados en row 1)
     for row_idx, row in enumerate(ws.iter_rows(), start=1):
+        logger.debug(f"Procesando fila {row_idx}")
+        logger.debug(f"Contenido de la fila: {[cell.value for cell in row]}")
+        
         if row_idx == 1:
             continue
-
+        
         if is_row_blank(row):
             errors.append({
                 "row": row_idx,
@@ -98,21 +106,40 @@ def case_estudiantes_activos(
         if user.email_unal and user.email_unal not in seen_users:
             users.append(user)
             seen_users.add(user.email_unal)
+            logger.debug(f"Usuario agregado: {user.email_unal}")
+        else:
+            logger.warning(f"Usuario duplicado encontrado: {user.email_unal}")
 
         unit: UnitUnalInput = get_unit_from_row(row_tuple)
         if unit.cod_unit and unit.cod_unit not in seen_units:
             units.append(unit)
             seen_units.add(unit.cod_unit)
+            logger.debug(f"Unidad agregada: {unit.cod_unit}")
+        else:
+            logger.warning(f"Unidad duplicada encontrada: {unit.cod_unit}")
 
         school: SchoolInput = get_school_from_row(row_tuple)
         if school.cod_school and school.cod_school not in seen_schools:
             schools.append(school)
             seen_schools.add(school.cod_school)
+            logger.debug(f"Escuela agregada: {school.cod_school}")
+        else:
+            logger.warning(
+                f"Escuela duplicada encontrada: {school.cod_school}"
+            )
 
         head: HeadquartersInput = get_headquarters_from_row(row_tuple)
         if head.cod_headquarters and head.cod_headquarters not in seen_heads:
             headquarters.append(head)
             seen_heads.add(head.cod_headquarters)
+            logger.debug(
+                f"Unidad administrativa agregada: {head.cod_headquarters}"
+            )
+        else:
+            logger.warning(
+                f"Unidad administrativa duplicada encontrada: "
+                f"{head.cod_headquarters}"
+            )
 
         userUnitAssoc: UserUnitAssociateInput = UserUnitAssociateInput(
             email_unal=user.email_unal,
@@ -127,7 +154,16 @@ def case_estudiantes_activos(
                 f"{user.email_unal}{unit.cod_unit}{cod_period}"
             )
             userUnitAssocs.append(userUnitAssoc)
-
+            logger.debug(
+                f"Asociación de usuario a unidad agregada: "
+                f"{user.email_unal}, {unit.cod_unit}, {cod_period}"
+            )
+        else:
+            logger.warning(
+                f"Asociación de usuario a unidad duplicada encontrada: "
+                f"{user.email_unal}, {unit.cod_unit}, {cod_period}"
+            )
+        
         unitSchoolAssoc = UnitSchoolAssociateInput(
             cod_unit=unit.cod_unit,
             cod_school=school.cod_school,
@@ -141,6 +177,15 @@ def case_estudiantes_activos(
                 f"{unit.cod_unit}{school.cod_school}{cod_period}"
             )
             unitSchoolAssocs.append(unitSchoolAssoc)
+            logger.debug(
+                f"Asociación de unidad a escuela agregada: "
+                f"{unit.cod_unit}, {school.cod_school}, {cod_period}"
+            )
+        else:
+            logger.warning(
+                f"Asociación de unidad a escuela duplicada encontrada: "
+                f"{unit.cod_unit}, {school.cod_school}, {cod_period}"
+            )
 
         schoolHeadAssoc = SchoolHeadquartersAssociateInput(
             cod_school=school.cod_school,
@@ -155,6 +200,11 @@ def case_estudiantes_activos(
                 f"{school.cod_school}{head.cod_headquarters}{cod_period}"
             )
             schoolHeadquartersAssocs.append(schoolHeadAssoc)
+        else:
+            logger.warning(
+                f"Asociación de escuela a unidad duplicada encontrada: "
+                f"{school.cod_school}, {head.cod_headquarters}, {cod_period}"
+            )
 
     if errors:
         return {
