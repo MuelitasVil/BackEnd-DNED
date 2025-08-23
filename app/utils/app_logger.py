@@ -3,12 +3,14 @@ import os
 
 
 class AppLogger:
-    def __init__(self, module_file: str):
+    def __init__(self, module_file: str, logger_file: str = "log.log"):
         """
         Inicializa un logger para el módulo actual.
 
         :param module_file: Ruta del archivo desde el que se crea el logger
             (ej. __file__).
+        :param logger_file: Ruta del archivo de log donde se escribirán los
+            logs
         """
         # solo el nombre del archivo
         module_name = os.path.basename(module_file)

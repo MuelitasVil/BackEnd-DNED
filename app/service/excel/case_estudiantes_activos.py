@@ -114,18 +114,18 @@ def case_estudiantes_activos(
         if unit.cod_unit and unit.cod_unit not in seen_units:
             units.append(unit)
             seen_units.add(unit.cod_unit)
-            logger.debug(f"Unidad agregada: {unit}")
+            logger.debug(f"Plan agregada: {unit}")
         else:
-            logger.warning(f"Unidad duplicada encontrada: {unit.cod_unit}")
+            logger.warning(f"Plan duplicada encontrada: {unit.cod_unit}")
 
         school: SchoolInput = get_school_from_row(row_tuple)
         if school.cod_school and school.cod_school not in seen_schools:
             schools.append(school)
             seen_schools.add(school.cod_school)
-            logger.debug(f"Escuela agregada: {school}")
+            logger.debug(f"Facultad agregada: {school}")
         else:
             logger.warning(
-                f"Escuela duplicada encontrada: {school.cod_school}"
+                f"Facultad duplicada encontrada: {school.cod_school}"
             )
 
         head: HeadquartersInput = get_headquarters_from_row(row_tuple)
@@ -133,11 +133,11 @@ def case_estudiantes_activos(
             headquarters.append(head)
             seen_heads.add(head.cod_headquarters)
             logger.debug(
-                f"Unidad administrativa agregada: {head}"
+                f"Sede administrativa agregada: {head}"
             )
         else:
             logger.warning(
-                f"Unidad administrativa duplicada encontrada: "
+                f"Sede administrativa duplicada encontrada: "
                 f"{head.cod_headquarters}"
             )
 
@@ -155,12 +155,12 @@ def case_estudiantes_activos(
             )
             userUnitAssocs.append(userUnitAssoc)
             logger.debug(
-                f"Asociación de usuario a unidad agregada: "
+                f"Asociación de usuario a plan agregada: "
                 f"{userUnitAssoc}"
             )
         else:
             logger.warning(
-                f"Asociación de usuario a unidad duplicada encontrada: "
+                f"Asociación de usuario a plan duplicada encontrada: "
                 f"{user.email_unal}, {unit.cod_unit}, {cod_period}"
             )
 
@@ -178,12 +178,12 @@ def case_estudiantes_activos(
             )
             unitSchoolAssocs.append(unitSchoolAssoc)
             logger.debug(
-                f"Asociación de unidad a escuela agregada: "
+                f"Asociación de plan a facultad agregada: "
                 f"{unitSchoolAssoc}"
             )
         else:
             logger.warning(
-                "Asociación de unidad a escuela duplicada encontrada: "
+                "Asociación de plan a facultad duplicada encontrada: "
                 f"{unitSchoolAssoc.cod_period} "
                 f"{unitSchoolAssoc.cod_unit} "
                 f"{unitSchoolAssoc.cod_school}"
@@ -202,10 +202,16 @@ def case_estudiantes_activos(
                 f"{school.cod_school}{head.cod_headquarters}{cod_period}"
             )
             schoolHeadquartersAssocs.append(schoolHeadAssoc)
+            logger.debug(
+                f"Asociación de facultad a sede agregada: "
+                f"{schoolHeadAssoc}"
+            )
         else:
             logger.warning(
-                f"Asociación de escuela a unidad duplicada encontrada: "
-                f"{school.cod_school}, {head.cod_headquarters}, {cod_period}"
+                f"Asociación de facultad a sede duplicada encontrada: "
+                f"{schoolHeadAssoc.cod_school}, "
+                f"{schoolHeadAssoc.cod_headquarters}, "
+                f"{schoolHeadAssoc.cod_period}"
             )
 
     if errors:
@@ -283,7 +289,7 @@ def get_school_from_row(row: Tuple[Cell, ...]) -> SchoolInput:
         sede == TypesEstudiante.SEDE_ORINOQUÍA or
         sede == TypesEstudiante.SEDE_TUMACO
     ):
-        cod_school = f"estf{tipoEstudiante}_{sede}"
+        cod_school = f"estf{tipoEstudiante}"
     else:
         acronimo = "".join(
             p[0].lower() for p in facultad.split() if len(p) > 2
