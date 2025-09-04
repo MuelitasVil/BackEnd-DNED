@@ -282,19 +282,31 @@ def get_school_from_row(row: Tuple[Cell, ...]) -> SchoolInput:
     tipoEstudiante: str = get_value_from_row(
         row, EstudianteActivos.TIPO_NIVEL.value
     )
+    prefix_sede: str = sede.split(" ")[1][:3].lower()
+
+    logger.debug(f"Facultad: {facultad}, Sede: {sede}, Tipo: {tipoEstudiante}")
+
+    if tipoEstudiante == General_Values.PREGRADO.value:
+        logger.debug("Tipo de estudiante es pregrado")
+        tipoEstudiante = "pre"
+    elif tipoEstudiante == General_Values.POSGRADO.value:
+        logger.debug("Tipo de estudiante es posgrado")
+        tipoEstudiante = "pos"
+
     cod_school: str = ""
     if (
         sede == TypesEstudiante.SEDE_AMAZONIA or
         sede == TypesEstudiante.SEDE_CARIBE or
         sede == TypesEstudiante.SEDE_ORINOQUÍA or
-        sede == TypesEstudiante.SEDE_TUMACO
+        sede == TypesEstudiante.SEDE_TUMACO or
+        sede == TypesEstudiante.SEDE_DE_LA_PAZ
     ):
-        cod_school = f"estf{tipoEstudiante}"
+        cod_school = f"estf{tipoEstudiante}{prefix_sede}"
     else:
         acronimo = "".join(
             p[0].lower() for p in facultad.split() if len(p) > 2
         )
-        cod_school = f"est{acronimo}{tipoEstudiante}_{sede}"
+        cod_school = f"est{acronimo}{tipoEstudiante}_{prefix_sede}"
 
     email: str = f"{cod_school}@unal.edu.co"
     return SchoolInput(
@@ -307,19 +319,20 @@ def get_school_from_row(row: Tuple[Cell, ...]) -> SchoolInput:
 
 
 def get_headquarters_from_row(row: Tuple[Cell, ...]) -> HeadquartersInput:
-    tipoEstudiante = ""
-    if tipoEstudiante == General_Values.PREGRADO:
-        tipoEstudiante = "pre"
-    elif tipoEstudiante == General_Values.POSGRADO:
-        tipoEstudiante = "pos"
-
     sede: str = get_value_from_row(row, EstudianteActivos.SEDE.value)
-    prefix_sede: str = sede[1][:3].lower()
-    cod_sede: str = f"estudiante{tipoEstudiante}_{prefix_sede}"
-    type_facultad: str = f"estudiante_{prefix_sede}"
     tipoEstudiante: str = get_value_from_row(
         row, EstudianteActivos.TIPO_NIVEL.value
     )
+
+    if tipoEstudiante == General_Values.PREGRADO.value:
+        tipoEstudiante = "pre"
+    elif tipoEstudiante == General_Values.POSGRADO.value:
+        tipoEstudiante = "pos"
+
+    prefix_sede: str = sede.split(" ")[1][:3].lower()
+    cod_sede: str = f"estudiante{tipoEstudiante}_{prefix_sede}"
+    type_facultad: str = f"estudiante_{prefix_sede}"
+
     email: str = f"{cod_sede}@unal.edu.co"
 
     return HeadquartersInput(
