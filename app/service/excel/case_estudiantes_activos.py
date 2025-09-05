@@ -1,4 +1,6 @@
 from typing import Dict, Any, List, Tuple, Set
+from wsgiref import headers
+from fastapi import HTTPException
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.cell.cell import Cell
 from sqlmodel import Session
@@ -215,11 +217,12 @@ def case_estudiantes_activos(
             )
 
     if errors:
-        return {
+        raise HTTPException(status_code=400, detail={
             "status": False,
             "errors": errors
-        }
+        })
 
+    print(userUnitAssocs)
     UserUnalService.bulk_insert_ignore(users, session)
     UnitUnalService.bulk_insert_ignore(units, session)
     SchoolService.bulk_insert_ignore(schools, session)
