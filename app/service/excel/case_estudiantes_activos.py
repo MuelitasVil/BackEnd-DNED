@@ -1,5 +1,4 @@
 from typing import Dict, Any, List, Tuple, Set
-from wsgiref import headers
 from fastapi import HTTPException
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.cell.cell import Cell
@@ -52,6 +51,7 @@ from app.service.crud.headquarters_service import HeadquartersService
 from app.utils.app_logger import AppLogger
 
 logger = AppLogger(__file__)
+logger2 = AppLogger(__file__, "UnitUserAssociation.log")
 
 
 # --------- validación principal y armado de colecciones ---------
@@ -166,6 +166,8 @@ def case_estudiantes_activos(
                 f"{user.email_unal}, {unit.cod_unit}, {cod_period}"
             )
 
+        logger2.debug(f"Asociación de usuario a plan: {userUnitAssoc}")
+
         unitSchoolAssoc = UnitSchoolAssociateInput(
             cod_unit=unit.cod_unit,
             cod_school=school.cod_school,
@@ -222,15 +224,39 @@ def case_estudiantes_activos(
             "errors": errors
         })
 
-    print(userUnitAssocs)
-    UserUnalService.bulk_insert_ignore(users, session)
-    UnitUnalService.bulk_insert_ignore(units, session)
-    SchoolService.bulk_insert_ignore(schools, session)
-    HeadquartersService.bulk_insert_ignore(headquarters, session)
-    UserUnitAssociateService.bulk_insert_ignore(userUnitAssocs, session)
-    UnitSchoolAssociateService.bulk_insert_ignore(unitSchoolAssocs, session)
-    SchoolHeadquartersAssociateService.bulk_insert_ignore(
-        schoolHeadquartersAssocs, session
+    resUsers = UserUnalService.bulk_insert_ignore(users, session)
+    resUnits = UnitUnalService.bulk_insert_ignore(units, session)
+    resSchools = SchoolService.bulk_insert_ignore(schools, session)
+    resHeadquarters = HeadquartersService.bulk_insert_ignore(
+        headquarters,
+        session
+    )
+    resUserUnitAssocs = UserUnitAssociateService.bulk_insert_ignore(
+        userUnitAssocs,
+        session
+    )
+    resUnitSchoolAssocs = UnitSchoolAssociateService.bulk_insert_ignore(
+        unitSchoolAssocs,
+        session
+    )
+    resSchoolHeadquartersAssocs = SchoolHeadquartersAssociateService.bulk_insert_ignore(  # noqa: E501 ignora error flake8
+        schoolHeadquartersAssocs,
+        session
+    )   
+
+    logger.info(f"Resultados de inserción users: {resUsers}")
+    logger.info(f"Resultados de inserción units: {resUnits}")
+    logger.info(f"Resultados de inserción schools: {resSchools}")
+    logger.info(f"Resultados de inserción headquarters: {resHeadquarters}")
+    logger.info(
+        f"Resultados de inserción user_unit_assocs: {resUserUnitAssocs}"
+    )
+    logger.info(
+        f"Resultados de inserción unit_school_assocs: {resUnitSchoolAssocs}"
+    )
+    logger.info(
+        f"Resultados de inserción school_headquarters_assocs: "
+        f"{resSchoolHeadquartersAssocs}"
     )
 
     return {

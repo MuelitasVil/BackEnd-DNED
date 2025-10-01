@@ -51,8 +51,7 @@ CREATE TABLE IF NOT EXISTS user_unal (
     lastname    VARCHAR(100) NOT NULL,
     full_name   VARCHAR(200) NULL,
     gender      VARCHAR(10)  NULL,
-    birth_date  DATE         NULL,
-    UNIQUE KEY uq_user_unal_document (document)
+    birth_date  DATE         NULL
 ) ENGINE=InnoDB;
 
 -- Tabla: user_workspace_associate
