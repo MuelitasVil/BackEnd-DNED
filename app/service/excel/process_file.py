@@ -4,10 +4,19 @@ from app.domain.enums.files.estudiante_activos import EstudianteActivos
 from app.service.excel.case_estudiantes_activos import case_estudiantes_activos
 from fastapi import HTTPException
 
+from app.service.crud.period_service import PeriodService
+
 
 def process_file(file: Workbook, cod_period: str, session: Session) -> bool:
     first_sheet_name: str = file.sheetnames[0]
     ws: worksheet = file[first_sheet_name]
+
+    period = PeriodService.get_by_code(session, cod_period)
+    if not period:
+        raise HTTPException(status_code=400, detail={
+            "error": f"El periodo con código {cod_period} no existe",
+            "message": "Verifique el código del periodo"
+        })
 
     headers = get_headers(ws)
     if not headers:

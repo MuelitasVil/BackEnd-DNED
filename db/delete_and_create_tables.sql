@@ -195,9 +195,9 @@ CREATE TABLE IF NOT EXISTS email_sender_headquarters (
 CREATE TABLE IF NOT EXISTS system_user (
     email           VARCHAR(100) PRIMARY KEY,
     created_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    hashed_password VARBINARY(255) NOT NULL,
+    hashed_password VARCHAR(255) NOT NULL,
     state           BOOLEAN      NOT NULL DEFAULT TRUE,
-    salt            VARBINARY(255) NOT NULL
+    salt            VARCHAR(255) NOT NULL
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS token (
