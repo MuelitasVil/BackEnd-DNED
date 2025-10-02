@@ -20,7 +20,7 @@ class AppLogger:
         # Evitar duplicados si el logger ya tiene handlers
         if not self.logger.handlers:
             # Crear handler para archivo fijo con UTF-8
-            file_handler = logging.FileHandler("log.log", encoding="utf-8")
+            file_handler = logging.FileHandler(logger_file, encoding="utf-8")
             file_handler.setLevel(logging.DEBUG)
 
             # Formato de los mensajes

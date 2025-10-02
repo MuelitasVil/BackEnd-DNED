@@ -51,7 +51,7 @@ from app.service.crud.headquarters_service import HeadquartersService
 from app.utils.app_logger import AppLogger
 
 logger = AppLogger(__file__)
-logger2 = AppLogger(__file__, "UnitUserAssociation.log")
+logger2 = AppLogger(__file__, "user_unit_association.log")
 
 
 # --------- validación principal y armado de colecciones ---------
@@ -258,6 +258,9 @@ def case_estudiantes_activos(
         f"Resultados de inserción school_headquarters_assocs: "
         f"{resSchoolHeadquartersAssocs}"
     )
+
+    for userUserAssoc in userUnitAssocs:
+        logger.info(f"Asociación de usuario a plan: {userUserAssoc}")
 
     return {
         "status": True,
