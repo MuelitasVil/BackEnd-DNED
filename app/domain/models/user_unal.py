@@ -13,3 +13,4 @@ class UserUnal(SQLModel, table=True):
     full_name: Optional[str] = Field(default=None, max_length=200)
     gender: Optional[str] = Field(default=None, max_length=10)
     birth_date: Optional[date] = None
+    headquarters: Optional[str] = Field(default=None, max_length=100)

@@ -11,3 +11,4 @@ class UserUnalInput(BaseModel):
     full_name: Optional[str] = None
     gender: Optional[str] = None
     birth_date: Optional[date] = None
+    headquarters: Optional[str] = None

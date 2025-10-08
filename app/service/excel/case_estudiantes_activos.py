@@ -40,7 +40,8 @@ from app.domain.dtos.headquarters.headquarters_input import HeadquartersInput
 from app.domain.enums.files.general import General_Values
 from app.domain.enums.files.estudiante_activos import (
     EstudianteActivos,
-    TypesEstudiante
+    TypesEstudiante,
+    SedeOrder,
 )
 
 from app.service.crud.user_unal_service import UserUnalService
@@ -81,10 +82,16 @@ def case_estudiantes_activos(
     seen_user_unit_assocs: Set[str] = set()
     seen_unit_school_assocs: Set[str] = set()
     seen_school_head_assocs: Set[str] = set()
+    unit_with_school_log: Set[str] = set()
 
     logger.info("Iniciando procesamiento de archivo de estudiantes activos")
     # recorre todas las filas (incluye encabezados en row 1)
-    for row_idx, row in enumerate(ws.iter_rows(), start=1):
+
+    # Llamada a la función que organiza las filas por sede
+    sorted_rows = organize_rows_by_sede(ws, errors)
+
+    for row_idx, row in sorted_rows:
+        isSpecialHeadquarters: bool = False
         logger.debug(f"Procesando fila {row_idx}")
         logger.debug(f"Contenido de la fila: {[cell.value for cell in row]}")
 
@@ -120,7 +127,8 @@ def case_estudiantes_activos(
         else:
             logger.warning(f"Plan duplicada encontrada: {unit.cod_unit}")
 
-        school: SchoolInput = get_school_from_row(row_tuple)
+        school: SchoolInput
+        school, isSpecialHeadquarters = get_school_from_row(row_tuple)
         if school.cod_school and school.cod_school not in seen_schools:
             schools.append(school)
             seen_schools.add(school.cod_school)
@@ -173,7 +181,12 @@ def case_estudiantes_activos(
             cod_school=school.cod_school,
             cod_period=cod_period
         )
-        if (
+        if isSpecialHeadquarters and unit.cod_unit in unit_with_school_log:
+            logger.debug(
+                f"La plan {unit.cod_unit} pertenece a una facultad especial "
+                f"de sede {school.cod_school}"
+            )
+        elif (
             f"{unit.cod_unit}{school.cod_school}{cod_period}"
             not in seen_unit_school_assocs
         ):
@@ -181,6 +194,8 @@ def case_estudiantes_activos(
                 f"{unit.cod_unit}{school.cod_school}{cod_period}"
             )
             unitSchoolAssocs.append(unitSchoolAssoc)
+            unit_with_school_log.add(unit.cod_unit)
+
             logger.debug(
                 f"Asociación de plan a facultad agregada: "
                 f"{unitSchoolAssoc}"
@@ -289,6 +304,9 @@ def get_user_from_row(row: Tuple[Cell, ...]) -> UserUnalInput:
         ),
         gender=None,
         birth_date=None,
+        headquarters=get_value_from_row(
+            row, EstudianteActivos.SEDE.value
+        )
     )
 
 
@@ -308,7 +326,8 @@ def get_unit_from_row(row: Tuple[Cell, ...]) -> UnitUnalInput:
     )
 
 
-def get_school_from_row(row: Tuple[Cell, ...]) -> SchoolInput:
+def get_school_from_row(row: Tuple[Cell, ...]) -> Tuple[SchoolInput, bool]:
+    isSpecialHeadquarters: bool = False
     facultad: str = get_value_from_row(row, EstudianteActivos.FACULTAD.value)
     sede: str = get_value_from_row(row, EstudianteActivos.SEDE.value)
     tipoEstudiante: str = get_value_from_row(
@@ -332,7 +351,8 @@ def get_school_from_row(row: Tuple[Cell, ...]) -> SchoolInput:
         sede == TypesEstudiante.SEDE_ORINOQUÍA or
         sede == TypesEstudiante.SEDE_TUMACO or
         sede == TypesEstudiante.SEDE_DE_LA_PAZ
-    ):
+    ):  
+        isSpecialHeadquarters = True
         cod_school = f"estf{tipoEstudiante}{prefix_sede}"
     else:
         acronimo = "".join(
@@ -341,13 +361,14 @@ def get_school_from_row(row: Tuple[Cell, ...]) -> SchoolInput:
         cod_school = f"est{acronimo}{tipoEstudiante}_{prefix_sede}"
 
     email: str = f"{cod_school}@unal.edu.co"
+
     return SchoolInput(
         cod_school=cod_school,
         email=email,
         name=facultad or None,
         description=None,
         type_facultad=None,
-    )
+    ), isSpecialHeadquarters
 
 
 def get_headquarters_from_row(row: Tuple[Cell, ...]) -> HeadquartersInput:
@@ -422,3 +443,80 @@ def get_blank_cell_errors(
                 "message": "Celda vacía"
             })
     return errors
+
+
+def organize_rows_by_sede(
+    ws: Worksheet,
+    errors: List[Dict[str, Any]]
+) -> List[Tuple[int, Tuple[Cell, ...]]]:
+    """
+    Organiza las filas del archivo Excel según la sede,
+    validando que la sede sea válida.
+    
+    {
+    1: [
+        (2, ('SEDE BOGOTÁ', 'ejemplo@bogota.com', 'Juan Pérez')),
+        (4, ('SEDE BOGOTÁ', 'ejemplo2@bogota.com', 'Luis García'))
+    ],
+    2: [
+        (3, ('SEDE MANIZALES', 'ejemplo@manizales.com', 'Ana Gómez'))
+    ],
+    3: [
+        (5, ('SEDE MEDELLÍN', 'ejemplo@medellin.com', 'María López'))
+    ]
+    }
+
+    :param ws: Worksheet del archivo de Excel.
+    :param errors: Lista de errores donde se agregarán los errores encontrados.
+    :return: Lista de filas organizadas por sede.
+    """
+    # Diccionario para organizar las filas según la sede
+    sede_dict: Dict[int, List[Tuple[int, Tuple[Cell, ...]]]] = {
+        order.value: [] for order in SedeOrder
+    }
+
+    logger.info("Iniciando procesamiento de archivo de estudiantes activos")
+
+    # Recorrer todas las filas del archivo Excel (incluye encabezados en row 1)
+    for row_idx, row in enumerate(ws.iter_rows(), start=1):
+        logger.debug(f"Procesando fila {row_idx}")
+        logger.debug(f"Contenido de la fila: {[cell.value for cell in row]}")
+
+        if row_idx == 1:
+            continue  # Skip header row
+
+        # Verificar si la fila está vacía
+        if is_blank(row):
+            errors.append({
+                "row": row_idx,
+                "column": None,
+                "message": "Fila completamente vacía"
+            })
+            continue
+
+        # Validar celdas vacías en la fila
+        errors.extend(get_blank_cell_errors(row, row_idx))
+
+        # Obtener el valor de la sede de la fila
+        sede_cell = get_value_from_row(row, EstudianteActivos.SEDE.value)
+        sede_value = sede_cell.strip().upper()
+
+        # Comprobar si la sede es válida y mapearla al SedeOrder
+        if sede_value in SedeOrder.__members__:
+            sede_order = SedeOrder[sede_value]
+            # Almacenar fila en el diccionario
+            sede_dict[sede_order.value].append((row_idx, row))
+        else:
+            errors.append({
+                "row": row_idx,
+                "column": EstudianteActivos.SEDE.value,
+                "message": f"Sede no válida: {sede_value}"
+            })
+            continue
+
+    # Ordenar las filas según el valor de SedeOrder (de menor a mayor)
+    sorted_rows = []
+    for order in sorted(sede_dict.keys()):
+        sorted_rows.extend(sede_dict[order])
+
+    return sorted_rows

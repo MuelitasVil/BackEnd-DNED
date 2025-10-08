@@ -2,6 +2,19 @@ from enum import Enum
 from typing import List
 
 
+# Definir el mapeo de sedes y su orden
+class SedeOrder(Enum):
+    SEDE_BOGOTA = 1
+    SEDE_MANIZALES = 2
+    SEDE_MEDELLÍN = 3
+    SEDE_PALMIRA = 4
+    SEDE_AMAZONIA = 5
+    SEDE_CARIBE = 6
+    SEDE_ORINOQUÍA = 7
+    SEDE_TUMACO = 8
+    SEDE_DE_LA_PAZ = 9
+
+
 class TypesEstudiante(Enum):
     SEDE_AMAZONIA = "SEDE AMAZONÍA"
     SEDE_BOGOTA = "SEDE BOGOTÁ"

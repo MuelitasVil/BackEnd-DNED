@@ -31,7 +31,7 @@ class UserUnalRepository:
         if not user:
             return None
 
-        update_data = data.dict(exclude_unset=True)
+        update_data = data.model_dump(exclude_unset=True)
         for key, value in update_data.items():
             setattr(user, key, value)
 
