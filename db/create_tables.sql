@@ -27,7 +27,8 @@ CREATE TABLE IF NOT EXISTS user_unal (
     lastname    VARCHAR(100) NOT NULL,
     full_name   VARCHAR(200) NULL,
     gender      VARCHAR(10)  NULL,
-    birth_date  DATE         NULL
+    birth_date  DATE         NULL,
+    headquarters VARCHAR(100) NULL
 ) ENGINE=InnoDB;
 
 -- Tabla: user_workspace_associate  (PK compuesta y FK a user_workspace)
