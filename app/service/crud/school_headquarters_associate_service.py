@@ -22,6 +22,26 @@ class SchoolHeadquartersAssociateService:
         return SchoolHeadquartersAssociateRepository(session).get_all()
 
     @staticmethod
+    def get_by_headquarters(
+        cod_headquarters: str,
+        session: Session
+    ) -> List[SchoolHeadquartersAssociate]:
+        return SchoolHeadquartersAssociateRepository(
+            session
+        ).get_by_headquarters(
+            cod_headquarters
+        )
+
+    @staticmethod
+    def get_by_school(
+        cod_school: str,
+        session: Session
+    ) -> List[SchoolHeadquartersAssociate]:
+        return SchoolHeadquartersAssociateRepository(session).get_by_school(
+            cod_school
+        )
+
+    @staticmethod
     def get_by_ids(
         cod_school: str,
         cod_headquarters: str,

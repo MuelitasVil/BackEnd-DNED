@@ -48,3 +48,19 @@ class TypeUserAssociationService:
             type_user_id,
             cod_period
             )
+
+    @staticmethod
+    def bulk_insert_ignore(
+        users: List[TypeUserAssociationInput],
+        session: Session
+    ):
+        """
+        Inserta en bulk usuarios.
+        Si hay duplicados en email_unal, MySQL los ignora.
+        """
+        user_models = [
+            TypeUserAssociation(**user.model_dump()) for user in users
+        ]
+        return TypeUserAssociationRepository(session).bulk_insert_ignore(
+            user_models
+        )

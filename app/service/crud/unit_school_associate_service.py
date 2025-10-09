@@ -20,6 +20,20 @@ class UnitSchoolAssociateService:
         return UnitSchoolAssociateRepository(session).get_all()
 
     @staticmethod
+    def get_by_unit(
+        cod_unit: str,
+        session: Session
+    ) -> List[UnitSchoolAssociate]:
+        return UnitSchoolAssociateRepository(session).get_by_unit(cod_unit)
+
+    @staticmethod
+    def get_by_school(
+        cod_school: str,
+        session: Session
+    ) -> List[UnitSchoolAssociate]:
+        return UnitSchoolAssociateRepository(session).get_by_school(cod_school)
+
+    @staticmethod
     def get_by_ids(
         cod_unit: str,
         cod_school: str,
@@ -29,7 +43,7 @@ class UnitSchoolAssociateService:
         return UnitSchoolAssociateRepository(session).get_by_ids(
             cod_unit, cod_school, cod_period
         )
-
+    
     @staticmethod
     def saveWithUnitAndSchool(
         unitInput: UnitUnalInput,

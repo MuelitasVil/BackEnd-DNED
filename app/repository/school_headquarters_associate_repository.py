@@ -24,6 +24,23 @@ class SchoolHeadquartersAssociateRepository:
             (cod_school, cod_headquarters, cod_period)
         )
 
+    def get_by_school(
+        self, cod_school: str
+    ) -> List[SchoolHeadquartersAssociate]:
+        statement = select(SchoolHeadquartersAssociate).where(
+            SchoolHeadquartersAssociate.cod_school == cod_school
+        )
+        return self.session.exec(statement).all()
+
+    def get_by_headquarters(
+            self,
+            cod_headquarters: str
+    ) -> List[SchoolHeadquartersAssociate]:
+        statement = select(SchoolHeadquartersAssociate).where(
+            SchoolHeadquartersAssociate.cod_headquarters == cod_headquarters
+        )
+        return self.session.exec(statement).all()
+
     def create(
             self,
             assoc: SchoolHeadquartersAssociate
@@ -45,7 +62,7 @@ class SchoolHeadquartersAssociateRepository:
             self.session.commit()
             return True
         return False
-    
+
     def bulk_insert_ignore(
         self, unitUnal: List[SchoolHeadquartersAssociate]
     ):

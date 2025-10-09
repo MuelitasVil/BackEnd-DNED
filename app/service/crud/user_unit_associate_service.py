@@ -20,6 +20,20 @@ class UserUnitAssociateService:
         return UserUnitAssociateRepository(session).get_all()
 
     @staticmethod
+    def get_by_user(
+        email_unal: str,
+        session: Session
+    ) -> List[UserUnitAssociate]:
+        return UserUnitAssociateRepository(session).get_by_user(email_unal)
+
+    @staticmethod
+    def get_by_unit(
+        cod_unit: str,
+        session: Session
+    ) -> List[UserUnitAssociate]:
+        return UserUnitAssociateRepository(session).get_by_unit(cod_unit)
+
+    @staticmethod
     def get_by_ids(
         email_unal: str,
         cod_unit: str,

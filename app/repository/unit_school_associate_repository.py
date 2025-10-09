@@ -11,6 +11,18 @@ class UnitSchoolAssociateRepository:
     def get_all(self) -> List[UnitSchoolAssociate]:
         return self.session.exec(select(UnitSchoolAssociate)).all()
 
+    def get_by_unit(self, cod_unit: str) -> List[UnitSchoolAssociate]:
+        statement = select(UnitSchoolAssociate).where(
+            UnitSchoolAssociate.cod_unit == cod_unit
+        )
+        return self.session.exec(statement).all()
+
+    def get_by_school(self, cod_school: str) -> List[UnitSchoolAssociate]:
+        statement = select(UnitSchoolAssociate).where(
+            UnitSchoolAssociate.cod_school == cod_school
+        )
+        return self.session.exec(statement).all()
+
     def get_by_ids(
         self,
         cod_unit: str,

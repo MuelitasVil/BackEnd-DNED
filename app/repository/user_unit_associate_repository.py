@@ -11,6 +11,18 @@ class UserUnitAssociateRepository:
     def get_all(self) -> List[UserUnitAssociate]:
         return self.session.exec(select(UserUnitAssociate)).all()
 
+    def get_by_user(self, email_unal: str) -> List[UserUnitAssociate]:
+        statement = select(UserUnitAssociate).where(
+            UserUnitAssociate.email_unal == email_unal
+        )
+        return self.session.exec(statement).all()
+
+    def get_by_unit(self, cod_unit: str) -> List[UserUnitAssociate]:
+        statement = select(UserUnitAssociate).where(
+            UserUnitAssociate.cod_unit == cod_unit
+        )
+        return self.session.exec(statement).all()
+
     def get_by_keys(
         self,
         email_unal: str,
