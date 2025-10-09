@@ -34,13 +34,13 @@ class UnitSchoolAssociateService:
         return UnitSchoolAssociateRepository(session).get_by_school(cod_school)
 
     @staticmethod
-    def get_by_ids(
+    def get_by_id(
         cod_unit: str,
         cod_school: str,
         cod_period: str,
         session: Session
     ) -> Optional[UnitSchoolAssociate]:
-        return UnitSchoolAssociateRepository(session).get_by_ids(
+        return UnitSchoolAssociateRepository(session).get_by_id(
             cod_unit, cod_school, cod_period
         )
     
@@ -63,7 +63,7 @@ class UnitSchoolAssociateService:
         ):
             return None
 
-        if UnitSchoolAssociateRepository(session).get_by_ids(
+        if UnitSchoolAssociateRepository(session).get_by_id(
             association.cod_unit,
             association.cod_school,
             association.cod_period

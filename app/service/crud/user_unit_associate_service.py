@@ -34,7 +34,7 @@ class UserUnitAssociateService:
         return UserUnitAssociateRepository(session).get_by_unit(cod_unit)
 
     @staticmethod
-    def get_by_ids(
+    def get_by_id(
         email_unal: str,
         cod_unit: str,
         cod_period: str,

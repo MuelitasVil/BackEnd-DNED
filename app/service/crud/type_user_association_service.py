@@ -16,13 +16,13 @@ class TypeUserAssociationService:
         return TypeUserAssociationRepository(session).get_all()
 
     @staticmethod
-    def get_by_ids(
+    def get_by_id(
         email_unal: str,
         type_user_id: str,
         cod_period: str,
         session: Session
     ) -> Optional[TypeUserAssociation]:
-        return TypeUserAssociationRepository(session).get_by_ids(
+        return TypeUserAssociationRepository(session).get_by_id(
             email_unal,
             type_user_id,
             cod_period

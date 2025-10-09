@@ -16,12 +16,12 @@ class EmailSenderUnitService:
         return EmailSenderUnitRepository(session).get_all()
 
     @staticmethod
-    def get_by_ids(
+    def get_by_id(
         sender_id: str,
         cod_unit: str,
         session: Session
     ) -> Optional[EmailSenderUnit]:
-        return EmailSenderUnitRepository(session).get_by_ids(
+        return EmailSenderUnitRepository(session).get_by_id(
             sender_id, cod_unit
         )
 

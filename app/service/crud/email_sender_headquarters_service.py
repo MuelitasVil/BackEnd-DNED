@@ -16,12 +16,12 @@ class EmailSenderHeadquartersService:
         return EmailSenderHeadquartersRepository(session).get_all()
 
     @staticmethod
-    def get_by_ids(
+    def get_by_id(
         sender_id: str,
         cod_headquarters: str,
         session: Session
     ) -> Optional[EmailSenderHeadquarters]:
-        return EmailSenderHeadquartersRepository(session).get_by_ids(
+        return EmailSenderHeadquartersRepository(session).get_by_id(
             sender_id, cod_headquarters
         )
 

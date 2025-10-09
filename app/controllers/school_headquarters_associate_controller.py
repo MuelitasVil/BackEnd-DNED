@@ -37,7 +37,7 @@ def get_association(
     session: Session = Depends(get_session),
     user_email: str = Depends(get_current_user)
 ):
-    assoc = SchoolHeadquartersAssociateService.get_by_ids(
+    assoc = SchoolHeadquartersAssociateService.get_by_id(
         cod_school,
         cod_headquarters,
         cod_period,

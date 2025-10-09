@@ -23,7 +23,7 @@ class UnitSchoolAssociateRepository:
         )
         return self.session.exec(statement).all()
 
-    def get_by_ids(
+    def get_by_id(
         self,
         cod_unit: str,
         cod_school: str,
@@ -41,7 +41,7 @@ class UnitSchoolAssociateRepository:
         return assoc
 
     def delete(self, cod_unit: str, cod_school: str, cod_period: str) -> bool:
-        assoc = self.get_by_ids(cod_unit, cod_school, cod_period)
+        assoc = self.get_by_id(cod_unit, cod_school, cod_period)
         if assoc:
             self.session.delete(assoc)
             self.session.commit()

@@ -18,14 +18,14 @@ class EmailSenderSchoolService:
         return EmailSenderSchoolRepository(session).get_all()
 
     @staticmethod
-    def get_by_ids(
+    def get_by_id(
         sender_id: str,
         cod_school: str,
         session: Session
     ) -> Optional[
         EmailSenderSchool
     ]:
-        return EmailSenderSchoolRepository(session).get_by_ids(
+        return EmailSenderSchoolRepository(session).get_by_id(
             sender_id, cod_school
         )
 

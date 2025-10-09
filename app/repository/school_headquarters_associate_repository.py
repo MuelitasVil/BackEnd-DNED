@@ -13,7 +13,7 @@ class SchoolHeadquartersAssociateRepository:
     def get_all(self) -> List[SchoolHeadquartersAssociate]:
         return self.session.exec(select(SchoolHeadquartersAssociate)).all()
 
-    def get_by_ids(
+    def get_by_id(
             self,
             cod_school: str,
             cod_headquarters: str,
@@ -56,7 +56,7 @@ class SchoolHeadquartersAssociateRepository:
             cod_headquarters: str,
             cod_period: str
     ) -> bool:
-        assoc = self.get_by_ids(cod_school, cod_headquarters, cod_period)
+        assoc = self.get_by_id(cod_school, cod_headquarters, cod_period)
         if assoc:
             self.session.delete(assoc)
             self.session.commit()

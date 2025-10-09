@@ -11,7 +11,7 @@ class EmailSenderHeadquartersRepository:
     def get_all(self) -> List[EmailSenderHeadquarters]:
         return self.session.exec(select(EmailSenderHeadquarters)).all()
 
-    def get_by_ids(
+    def get_by_id(
         self,
         sender_id: str,
         cod_headquarters: str
@@ -31,7 +31,7 @@ class EmailSenderHeadquartersRepository:
         return assoc
 
     def delete(self, sender_id: str, cod_headquarters: str) -> bool:
-        assoc = self.get_by_ids(sender_id, cod_headquarters)
+        assoc = self.get_by_id(sender_id, cod_headquarters)
         if assoc:
             self.session.delete(assoc)
             self.session.commit()

@@ -37,7 +37,7 @@ def get_association(
     session: Session = Depends(get_session),
     user_email: str = Depends(get_current_user)
 ):
-    assoc = UserUnitAssociateService.get_by_ids(
+    assoc = UserUnitAssociateService.get_by_id(
         email_unal, cod_unit, cod_period, session
     )
     if not assoc:

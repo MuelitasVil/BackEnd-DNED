@@ -28,7 +28,7 @@ def get_association(
     session: Session = Depends(get_session),
     user_email: str = Depends(get_current_user)
 ):
-    assoc = EmailSenderUnitService.get_by_ids(
+    assoc = EmailSenderUnitService.get_by_id(
         sender_id,
         cod_unit,
         session

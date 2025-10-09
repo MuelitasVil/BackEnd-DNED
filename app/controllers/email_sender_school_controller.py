@@ -34,7 +34,7 @@ def get_association(
     session: Session = Depends(get_session),
     user_email: str = Depends(get_current_user)
 ):
-    assoc = EmailSenderSchoolService.get_by_ids(sender_id, cod_school, session)
+    assoc = EmailSenderSchoolService.get_by_id(sender_id, cod_school, session)
     if not assoc:
         raise HTTPException(status_code=404, detail="Association not found")
     return assoc

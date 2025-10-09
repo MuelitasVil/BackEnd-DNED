@@ -11,7 +11,7 @@ class TypeUserAssociationRepository:
     def get_all(self) -> List[TypeUserAssociation]:
         return self.session.exec(select(TypeUserAssociation)).all()
 
-    def get_by_ids(
+    def get_by_id(
             self,
             email_unal: str,
             type_user_id: str,
@@ -34,7 +34,7 @@ class TypeUserAssociationRepository:
             type_user_id: str,
             cod_period: str
     ) -> bool:
-        assoc = self.get_by_ids(email_unal, type_user_id, cod_period)
+        assoc = self.get_by_id(email_unal, type_user_id, cod_period)
         if assoc:
             self.session.delete(assoc)
             self.session.commit()
