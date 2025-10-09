@@ -40,8 +40,7 @@ from app.domain.dtos.headquarters.headquarters_input import HeadquartersInput
 from app.domain.enums.files.general import General_Values
 from app.domain.enums.files.estudiante_activos import (
     EstudianteActivos,
-    TypesEstudiante,
-    SedeOrder,
+    SedeEnum
 )
 
 from app.service.crud.user_unal_service import UserUnalService
@@ -84,11 +83,18 @@ def case_estudiantes_activos(
     seen_school_head_assocs: Set[str] = set()
     unit_with_school_log: Set[str] = set()
 
-    logger.info("Iniciando procesamiento de archivo de estudiantes activos")
     # recorre todas las filas (incluye encabezados en row 1)
 
     # Llamada a la función que organiza las filas por sede
     sorted_rows = organize_rows_by_sede(ws, errors)
+
+    if errors:
+        raise HTTPException(status_code=400, detail={
+            "status": False,
+            "errors": errors[0:10]  # Limitar a los primeros 10 errores
+        })
+
+    logger.info("Iniciando procesamiento de archivo de estudiantes activos")
 
     for row_idx, row in sorted_rows:
         isSpecialHeadquarters: bool = False
@@ -110,7 +116,6 @@ def case_estudiantes_activos(
 
         # construir DTOs de la fila
         row_tuple: Tuple[Cell, ...] = row  # tipado explícito
-
         user: UserUnalInput = get_user_from_row(row_tuple)
         if user.email_unal and user.email_unal not in seen_users:
             users.append(user)
@@ -181,6 +186,11 @@ def case_estudiantes_activos(
             cod_school=school.cod_school,
             cod_period=cod_period
         )
+        logger.debug(
+            f"Es una sede de presencia nacional: {isSpecialHeadquarters}"
+        )
+        logger.debug(f"Plan: {unit.cod_unit}, Facultad: {school.cod_school}")
+        logger.debug(f"unit with school: {unit_with_school_log}")
         if isSpecialHeadquarters and unit.cod_unit in unit_with_school_log:
             logger.debug(
                 f"La plan {unit.cod_unit} pertenece a una facultad especial "
@@ -236,28 +246,38 @@ def case_estudiantes_activos(
     if errors:
         raise HTTPException(status_code=400, detail={
             "status": False,
-            "errors": errors
+            "errors": errors[0:10]  # Limitar a los primeros 10 errores
         })
 
-    resUsers = UserUnalService.bulk_insert_ignore(users, session)
-    resUnits = UnitUnalService.bulk_insert_ignore(units, session)
-    resSchools = SchoolService.bulk_insert_ignore(schools, session)
-    resHeadquarters = HeadquartersService.bulk_insert_ignore(
-        headquarters,
-        session
-    )
-    resUserUnitAssocs = UserUnitAssociateService.bulk_insert_ignore(
-        userUnitAssocs,
-        session
-    )
-    resUnitSchoolAssocs = UnitSchoolAssociateService.bulk_insert_ignore(
-        unitSchoolAssocs,
-        session
-    )
-    resSchoolHeadquartersAssocs = SchoolHeadquartersAssociateService.bulk_insert_ignore(  # noqa: E501 ignora error flake8
-        schoolHeadquartersAssocs,
-        session
-    )   
+    try:
+        logger.info("Validación completada sin errores.")
+        logger.info("Resumiendo resultados e iniciando inserciones...")
+
+        # Intentar insertar los datos en la base de datos
+        resUsers = UserUnalService.bulk_insert_ignore(users, session)
+        resUnits = UnitUnalService.bulk_insert_ignore(units, session)
+        resSchools = SchoolService.bulk_insert_ignore(schools, session)
+        resHeadquarters = HeadquartersService.bulk_insert_ignore(
+            headquarters,
+            session
+        )
+        resUserUnitAssocs = UserUnitAssociateService.bulk_insert_ignore(
+            userUnitAssocs,
+            session
+        )
+        resUnitSchoolAssocs = UnitSchoolAssociateService.bulk_insert_ignore(
+            unitSchoolAssocs,
+            session
+        )
+        resSchoolHeadquartersAssocs = SchoolHeadquartersAssociateService.bulk_insert_ignore(  # noqa: E501 ignora error flake8
+            schoolHeadquartersAssocs,
+            session
+        )
+    except Exception as e:
+        logger.error(f"Error durante el proceso de inserción: {str(e)}")
+        logger.error(f"Detalles del error: {e}")
+
+    logger.info("Inserciones completadas exitosamente.")
 
     logger.info(f"Resultados de inserción users: {resUsers}")
     logger.info(f"Resultados de inserción units: {resUnits}")
@@ -345,12 +365,13 @@ def get_school_from_row(row: Tuple[Cell, ...]) -> Tuple[SchoolInput, bool]:
         tipoEstudiante = "pos"
 
     cod_school: str = ""
+
     if (
-        sede == TypesEstudiante.SEDE_AMAZONIA or
-        sede == TypesEstudiante.SEDE_CARIBE or
-        sede == TypesEstudiante.SEDE_ORINOQUÍA or
-        sede == TypesEstudiante.SEDE_TUMACO or
-        sede == TypesEstudiante.SEDE_DE_LA_PAZ
+        sede == SedeEnum.SEDE_AMAZONIA._name or
+        sede == SedeEnum.SEDE_CARIBE._name or
+        sede == SedeEnum.SEDE_ORINOQUÍA._name or
+        sede == SedeEnum.SEDE_TUMACO._name or
+        sede == SedeEnum.SEDE_DE_LA_PAZ._name
     ):  
         isSpecialHeadquarters = True
         cod_school = f"estf{tipoEstudiante}{prefix_sede}"
@@ -472,15 +493,16 @@ def organize_rows_by_sede(
     """
     # Diccionario para organizar las filas según la sede
     sede_dict: Dict[int, List[Tuple[int, Tuple[Cell, ...]]]] = {
-        order.value: [] for order in SedeOrder
+        order.number: [] for order in SedeEnum
     }
 
-    logger.info("Iniciando procesamiento de archivo de estudiantes activos")
+    logger.info(
+        "Iniciando organizacion archivo de "
+        "estudiantes activos"
+    )
 
     # Recorrer todas las filas del archivo Excel (incluye encabezados en row 1)
     for row_idx, row in enumerate(ws.iter_rows(), start=1):
-        logger.debug(f"Procesando fila {row_idx}")
-        logger.debug(f"Contenido de la fila: {[cell.value for cell in row]}")
 
         if row_idx == 1:
             continue  # Skip header row
@@ -500,12 +522,13 @@ def organize_rows_by_sede(
         # Obtener el valor de la sede de la fila
         sede_cell = get_value_from_row(row, EstudianteActivos.SEDE.value)
         sede_value = sede_cell.strip().upper()
+        info_sede = SedeEnum.get_by_name(sede_value)
 
         # Comprobar si la sede es válida y mapearla al SedeOrder
-        if sede_value in SedeOrder.__members__:
-            sede_order = SedeOrder[sede_value]
+        if info_sede:
+            sede_order = info_sede.number
             # Almacenar fila en el diccionario
-            sede_dict[sede_order.value].append((row_idx, row))
+            sede_dict[sede_order].append((row_idx, row))
         else:
             errors.append({
                 "row": row_idx,
@@ -518,5 +541,8 @@ def organize_rows_by_sede(
     sorted_rows = []
     for order in sorted(sede_dict.keys()):
         sorted_rows.extend(sede_dict[order])
+
+    logger.info("Finalizando organizacion de archivo de estudiantes activos")
+    logger.debug(f"Errores encontrados: {errors}")
 
     return sorted_rows

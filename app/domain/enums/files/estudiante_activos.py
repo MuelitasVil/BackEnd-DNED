@@ -3,28 +3,47 @@ from typing import List
 
 
 # Definir el mapeo de sedes y su orden
-class SedeOrder(Enum):
-    SEDE_BOGOTA = 1
-    SEDE_MANIZALES = 2
-    SEDE_MEDELLÍN = 3
-    SEDE_PALMIRA = 4
-    SEDE_AMAZONIA = 5
-    SEDE_CARIBE = 6
-    SEDE_ORINOQUÍA = 7
-    SEDE_TUMACO = 8
-    SEDE_DE_LA_PAZ = 9
+class SedeEnum(Enum):
+    SEDE_BOGOTA = (1, "SEDE BOGOTÁ")
+    SEDE_MANIZALES = (2, "SEDE MANIZALES")
+    SEDE_MEDELLÍN = (3, "SEDE MEDELLÍN")
+    SEDE_PALMIRA = (4, "SEDE PALMIRA")
+    SEDE_AMAZONIA = (5, "SEDE AMAZONÍA")
+    SEDE_CARIBE = (6, "SEDE CARIBE")
+    SEDE_ORINOQUÍA = (7, "SEDE ORINOQUÍA")
+    SEDE_TUMACO = (8, "SEDE TUMACO")
+    SEDE_DE_LA_PAZ = (9, "SEDE DE LA PAZ")
 
+    def __init__(self, number, _name):
+        self.number = number
+        self._name = _name
 
-class TypesEstudiante(Enum):
-    SEDE_AMAZONIA = "SEDE AMAZONÍA"
-    SEDE_BOGOTA = "SEDE BOGOTÁ"
-    SEDE_CARIBE = "SEDE CARIBE"
-    SEDE_DE_LA_PAZ = "SEDE DE LA PAZ"
-    SEDE_MANIZALES = "SEDE MANIZALES"
-    SEDE_MEDELLÍN = "SEDE MEDELLÍN"
-    SEDE_ORINOQUÍA = "SEDE ORINOQUÍA"
-    SEDE_PALMIRA = "SEDE PALMIRA"
-    SEDE_TUMACO = "SEDE TUMACO"
+    @classmethod
+    def is_valid_sede(cls, sede_value: str) -> bool:
+        """
+        Valida si el valor de la sede proporcionado existe en el Enum SedeEnum.
+        :param sede_value: El valor de la sede (con tildes, mayúsculas, etc.).
+        :return: True si la sede existe, False en caso contrario.
+        """
+        # Comparar directamente el string con los nombres de los miembros
+        # del Enum
+        name_members = [member._name for member in cls]
+        if sede_value in name_members:
+            return True
+        return False
+
+    @classmethod
+    def get_by_name(cls, name: str):
+        """
+        Obtiene un miembro del Enum a partir del nombre de la sede.
+        :param name: El nombre de la sede (como cadena, e.g., "SEDE BOGOTÁ").
+        :return: El miembro correspondiente del Enum.
+        """
+        # Comparar el nombre ingresado con el atributo _name del Enum
+        for member in cls:
+            if member._name == name:
+                return member
+        return None  # Si no se encuentra el nombre, se retorna None
 
 
 class EstudianteActivos(Enum):
