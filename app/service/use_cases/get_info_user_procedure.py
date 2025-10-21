@@ -42,25 +42,37 @@ def get_info_user_via_sp(
         period_associations={}
     )
 
-    print(result)
-
     temp_dict = {}
     for row in result:
         period = row['cod_period']
         if period not in temp_dict:
             temp_dict[period] = {}
 
-        headquarters_cod = row['cod_headquarters']
-        if headquarters_cod not in temp_dict[period]:
-            temp_dict[period][headquarters_cod] = {}
+        headquarters_name = row['headquarters_name']
+        if headquarters_name not in temp_dict[period]:
+            cod_headquarters = row['cod_headquarters']
+            temp_dict[period][headquarters_name] = {
+                "code": cod_headquarters,
+                "schools": {}
+            }
 
-        school_code = row['cod_school']
-        if school_code not in temp_dict[period][headquarters_cod]:
-            temp_dict[period][headquarters_cod][school_code] = []
+        headquarter = temp_dict[period][headquarters_name] 
+        school_name = row['school_name']
+        if school_name not in headquarter["schools"]:
+            school_code = row['cod_school']
+            headquarter["schools"][school_name] = {
+                "code": school_code,
+                "units": {}
+            }
 
-        unit_code = row['cod_unit']
-        if unit_code not in temp_dict[period][headquarters_cod][school_code]:
-            temp_dict[period][headquarters_cod][school_code].append(unit_code)
+        school = headquarter["schools"][school_name]
+        units_of_school = school["units"]
+        unit_name = row['unit_name']
+        if unit_name not in units_of_school:
+            unit_code = row['cod_unit']
+            units_of_school[unit_name] = {
+                "code": unit_code
+            }
 
     print(temp_dict)
     user_info.period_associations = temp_dict

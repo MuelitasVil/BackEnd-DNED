@@ -6,7 +6,7 @@ from app.configuration.database import get_session
 from app.utils.auth import get_current_user
 from app.utils.type_file_validation import readExcelFile
 
-from app.service.excel.process_file import process_file
+from app.service.excel_processor.process_file import process_file
 from app.service.crud.period_service import PeriodService
 
 router = APIRouter(prefix="/upload_excel", tags=["Excel Upload"])

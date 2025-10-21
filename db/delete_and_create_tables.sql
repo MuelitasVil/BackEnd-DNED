@@ -155,10 +155,27 @@ CREATE TABLE IF NOT EXISTS type_user_association (
 ) ENGINE=InnoDB;
 
 -- Tabla central de correos emisores
-CREATE TABLE IF NOT EXISTS email_sender (
-    id    VARCHAR(50)  PRIMARY KEY,
-    email VARCHAR(100) NOT NULL UNIQUE,
-    name  VARCHAR(100) NULL
+CREATE TABLE email_sender (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+
+  email VARCHAR(254) NOT NULL,
+  name  VARCHAR(150) NULL,
+
+  -- Regla única para este email:
+  org_type ENUM('GLOBAL','HEADQUARTERS','SCHOOL','UNIT','PLAN') NOT NULL DEFAULT 'GLOBAL',
+  org_code VARCHAR(100) NULL,          -- código de facultad/unidad/plan (si aplica)
+  sede_code VARCHAR(100) NULL,         -- "SEDE BOGOTÁ", "SEDE MEDELLÍN"... (si aplica)
+  level ENUM('PRE','POS','ANY') NOT NULL DEFAULT 'ANY',
+  role  ENUM('OWNER','MEMBER') NOT NULL DEFAULT 'OWNER',
+  priority INT NOT NULL DEFAULT 100,
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NULL ON UPDATE CURRENT_TIMESTAMP,
+
+  UNIQUE KEY uq_email (email),
+  -- Índices de consulta por ámbito:
+  INDEX idx_scope (org_type, org_code, sede_code, level, role, priority)
 ) ENGINE=InnoDB;
 
 -- Asociación: email_sender con unidad

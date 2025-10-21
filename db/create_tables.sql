@@ -132,14 +132,31 @@ CREATE TABLE IF NOT EXISTS type_user_association (
 
 -- Tabla central de correos emisores
 CREATE TABLE IF NOT EXISTS email_sender (
-    id    VARCHAR(50)  PRIMARY KEY,
-    email VARCHAR(100) NOT NULL UNIQUE,
-    name  VARCHAR(100) NULL
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+
+  email VARCHAR(254) NOT NULL,
+  name  VARCHAR(150) NULL,
+
+  -- Regla única para este email:
+  org_type ENUM('GLOBAL','HEADQUARTERS','SCHOOL','UNIT') NOT NULL DEFAULT 'GLOBAL',
+  org_code VARCHAR(100) NULL,          -- código de facultad/unidad/plan (si aplica)
+  sede_code VARCHAR(100) NULL,         -- "SEDE BOGOTÁ", "SEDE MEDELLÍN"... (si aplica)
+  level ENUM('PRE','POS','ANY') NOT NULL DEFAULT 'ANY',
+  role  ENUM('OWNER','MEMBER') NOT NULL DEFAULT 'OWNER',
+  priority INT NOT NULL DEFAULT 100,
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NULL ON UPDATE CURRENT_TIMESTAMP,
+
+  UNIQUE KEY uq_email (email),
+  -- Índices de consulta por ámbito:
+  INDEX idx_scope (org_type, org_code, sede_code, level, role, priority)
 ) ENGINE=InnoDB;
 
 -- Asociación: email_sender con unidad  (PK compuesta)
 CREATE TABLE IF NOT EXISTS email_sender_unit (
-    sender_id VARCHAR(50) NOT NULL,
+    sender_id BIGINT UNSIGNED NOT NULL,
     cod_unit  VARCHAR(50) NOT NULL,
     PRIMARY KEY (sender_id, cod_unit),
     CONSTRAINT fk_esu_sender FOREIGN KEY (sender_id) REFERENCES email_sender(id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -149,7 +166,7 @@ CREATE TABLE IF NOT EXISTS email_sender_unit (
 
 -- Asociación: email_sender con escuela
 CREATE TABLE IF NOT EXISTS email_sender_school (
-    sender_id  VARCHAR(50) NOT NULL,
+    sender_id  BIGINT UNSIGNED NOT NULL,
     cod_school VARCHAR(50) NOT NULL,
     PRIMARY KEY (sender_id, cod_school),
     CONSTRAINT fk_ess_sender FOREIGN KEY (sender_id)  REFERENCES email_sender(id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -159,7 +176,7 @@ CREATE TABLE IF NOT EXISTS email_sender_school (
 
 -- Asociación: email_sender con sede
 CREATE TABLE IF NOT EXISTS email_sender_headquarters (
-    sender_id        VARCHAR(50) NOT NULL,
+    sender_id        BIGINT UNSIGNED NOT NULL,
     cod_headquarters VARCHAR(50) NOT NULL,
     PRIMARY KEY (sender_id, cod_headquarters),
     CONSTRAINT fk_esh_sender       FOREIGN KEY (sender_id)        REFERENCES email_sender(id) ON DELETE CASCADE ON UPDATE CASCADE,
