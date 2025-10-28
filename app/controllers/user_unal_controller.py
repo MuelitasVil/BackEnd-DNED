@@ -7,7 +7,7 @@ from app.domain.models.user_unal import UserUnal
 from app.domain.dtos.user_unal.user_unal_input import UserUnalInput
 from app.service.crud.user_unal_service import UserUnalService
 from app.domain.dtos.user_unal.user_info import UserInfoAssociation
-from app.service.use_cases.get_info_user_procedure import get_info_user_via_sp
+from app.service.use_cases.get_info_user import get_info_user
 
 router = APIRouter(prefix="/users_unal", tags=["Users UNAL"])
 
@@ -35,7 +35,7 @@ def get_user_info(
     email_unal: str,
     session: Session = Depends(get_session),
 ):
-    user_info = get_info_user_via_sp(email_unal, session)
+    user_info = get_info_user(email_unal, session)
     if not user_info:
         raise HTTPException(status_code=404, detail="User not found")
     return user_info
