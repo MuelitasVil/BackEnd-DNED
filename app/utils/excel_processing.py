@@ -8,7 +8,11 @@ def is_blank(v: Any) -> bool:
 
 
 def get_file_text(v: Any) -> str:
-    return "" if v is None else str(v).strip()
+    if v is None:
+        return ""
+    text = str(v).strip()
+    text = text.replace('(', '').replace(')', '')
+    return text
 
 
 def get_value_from_row(row: Tuple[Cell, ...], col_idx: int) -> str:

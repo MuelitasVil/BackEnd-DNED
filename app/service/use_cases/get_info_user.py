@@ -7,6 +7,9 @@ from app.domain.models.user_unal import UserUnal
 from app.domain.dtos.user_unal.user_info import UserInfoAssociation
 
 from app.service.crud.user_unal_service import UserUnalService
+from app.utils.app_logger import AppLogger
+
+logger = AppLogger(__file__)
 
 
 def get_info_user(
@@ -74,7 +77,5 @@ def get_info_user(
                 "code": unit_code
             }
 
-    print(temp_dict)
     user_info.period_associations = temp_dict
-    print(user_info)
     return user_info

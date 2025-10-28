@@ -6,6 +6,9 @@ from app.configuration.database import get_session
 from app.domain.models.email_sender import EmailSender
 from app.domain.dtos.email_sender.email_sender_input import EmailSenderInput
 from app.service.crud.email_sender_service import EmailSenderService
+from app.service.use_cases.fill_asociate_email_sender import (
+    fill_associate_email_sender
+)
 
 router = APIRouter(prefix="/email_senders", tags=["Email Senders"])
 
@@ -38,6 +41,16 @@ def create_email_sender(
     session: Session = Depends(get_session)
 ):
     return EmailSenderService.create(data, session)
+
+
+@router.post(
+    "/create-asociation-email-senders",
+    status_code=status.HTTP_201_CREATED
+)
+def create_email_senders(
+    session: Session = Depends(get_session)
+):
+    return fill_associate_email_sender(session)
 
 
 @router.patch("/{id}", response_model=EmailSender)

@@ -83,15 +83,12 @@ def case_estudiantes_activos(
     seen_school_head_assocs: Set[str] = set()
     unit_with_school_log: Set[str] = set()
 
-    # recorre todas las filas (incluye encabezados en row 1)
-
-    # Llamada a la función que organiza las filas por sede
     sorted_rows = organize_rows_by_sede(ws, errors)
 
     if errors:
         raise HTTPException(status_code=400, detail={
             "status": False,
-            "errors": errors[0:10]  # Limitar a los primeros 10 errores
+            "errors": errors[0:10]
         })
 
     logger.info("Iniciando procesamiento de archivo de estudiantes activos")
@@ -114,8 +111,7 @@ def case_estudiantes_activos(
 
         errors.extend(get_blank_cell_errors(row, row_idx))
 
-        # construir DTOs de la fila
-        row_tuple: Tuple[Cell, ...] = row  # tipado explícito
+        row_tuple: Tuple[Cell, ...] = row
         user: UserUnalInput = get_user_from_row(row_tuple)
         if user.email_unal and user.email_unal not in seen_users:
             users.append(user)
@@ -246,14 +242,13 @@ def case_estudiantes_activos(
     if errors:
         raise HTTPException(status_code=400, detail={
             "status": False,
-            "errors": errors[0:10]  # Limitar a los primeros 10 errores
+            "errors": errors[0:10]
         })
 
     try:
         logger.info("Validación completada sin errores.")
         logger.info("Resumiendo resultados e iniciando inserciones...")
 
-        # Intentar insertar los datos en la base de datos
         resUsers = UserUnalService.bulk_insert_ignore(users, session)
         resUnits = UnitUnalService.bulk_insert_ignore(units, session)
         resSchools = SchoolService.bulk_insert_ignore(schools, session)
@@ -404,6 +399,9 @@ def get_headquarters_from_row(row: Tuple[Cell, ...]) -> HeadquartersInput:
         tipoEstudiante = "pos"
 
     prefix_sede: str = sede.split(" ")[1][:3].lower()
+    if sede == SedeEnum.SEDE_DE_LA_PAZ._name:
+        prefix_sede = sede.split(" ")[3][:3].lower()
+
     cod_sede: str = f"estudiante{tipoEstudiante}_{prefix_sede}"
     type_facultad: str = f"estudiante_{prefix_sede}"
 
