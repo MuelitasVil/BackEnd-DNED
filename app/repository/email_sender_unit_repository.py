@@ -1,4 +1,4 @@
-from sqlmodel import Session, select
+from sqlmodel import Session, insert, select
 from typing import List, Optional
 
 from app.domain.models.email_sender_unit import EmailSenderUnit
@@ -31,3 +31,17 @@ class EmailSenderUnitRepository:
             self.session.commit()
             return True
         return False
+    
+    def bulk_insert_ignore(
+        self, unit_emails: List[EmailSenderUnit]
+    ):
+        """
+        Inserta múltiples usuarios en la tabla.
+        Si encuentra PK duplicada (email_unal), ignora ese registro.
+        """
+        stmt = insert(EmailSenderUnit).values(
+            [u.model_dump() for u in unit_emails]
+        )
+        stmt = stmt.prefix_with("IGNORE")
+        self.session.exec(stmt)
+        self.session.commit()

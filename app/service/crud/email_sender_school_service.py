@@ -42,3 +42,25 @@ class EmailSenderSchoolService:
         return EmailSenderSchoolRepository(session).delete(
             sender_id, cod_school
         )
+
+    # TODO: this methond break the pattern, fix it later
+    # the input is not a dto, its a model.
+    @staticmethod
+    def bulk_insert_ignore(
+        email_schools: List[EmailSenderSchool],
+        session: Session
+    ):
+        """
+        Inserta en bulk usuarios.
+        Si hay duplicados en email_unal, MySQL los ignora.
+        """
+        user_models = [
+            EmailSenderSchool(**u.model_dump(exclude_unset=True))
+            for u in email_schools
+        ]
+        repo = EmailSenderSchoolRepository(session)
+        repo.bulk_insert_ignore(user_models)
+        return {
+            "inserted": len(email_schools),
+            "duplicates_ignored": True,
+        }
