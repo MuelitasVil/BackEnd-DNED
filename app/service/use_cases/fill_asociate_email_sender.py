@@ -91,24 +91,17 @@ def fill_associate_email_sender(session: Session):
 
     school_senders.extend(temp_school_senders)
 
-    logger.info("Imprimir sender de unidades academicas")
+    EmailSenderUnitService.bulk_insert_ignore(
+        units_senders, session
+    )
 
-    for sender in units_senders:
-        logger.info(
-            f"Unidad academica: {sender.cod_unit}, Sender: {sender.sender_id}"
-        )
+    EmailSenderSchoolService.bulk_insert_ignore(
+        school_senders, session
+    )
 
-    logger.info("Imprimir sender de facultades academincas")
-    for sender in school_senders:
-        logger.info(
-            f"Facultad: {sender.cod_school}, Sender: {sender.sender_id}"
-        )
-
-    logger.info("Imprimir sender de sedes")
-    for sender in headquarters_senders:
-        logger.info(
-            f"Sede: {sender.cod_headquarters}, Sender: {sender.sender_id}"
-        )
+    EmailSenderHeadquartersService.bulk_insert_ignore(
+        headquarters_senders, session
+    )
 
 
 def process_email_sender(senders: list[EmailSender]):
@@ -145,11 +138,8 @@ def fill_global_email_senders(
     school_senders: list[EmailSenderSchool] = []
     headquarters_senders: list[EmailSenderHeadquarters] = []
 
-    logger.info("Llenando senders globales")
     for sender in senders_global:
-        logger.info(f"Procesando sender global: {sender.email}")
         for hq in headquarters:
-            logger.info(f"  Asociando sede: {hq.name}")
             hq_sender = EmailSenderHeadquarters(
                 sender_id=sender.email,
                 cod_headquarters=hq.cod_headquarters,
