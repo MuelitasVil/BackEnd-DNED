@@ -3,7 +3,6 @@ from sqlmodel import Session
 from typing import List
 
 from app.configuration.database import get_session
-from app.utils.auth import get_current_user
 from app.domain.models.email_sender import EmailSender
 from app.domain.dtos.email_sender.email_sender_input import EmailSenderInput
 from app.service.crud.email_sender_service import EmailSenderService
@@ -13,8 +12,7 @@ router = APIRouter(prefix="/email_senders", tags=["Email Senders"])
 
 @router.get("/", response_model=List[EmailSender])
 def list_email_senders(
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     return EmailSenderService.get_all(session)
 
@@ -22,8 +20,7 @@ def list_email_senders(
 @router.get("/{id}", response_model=EmailSender)
 def get_email_sender(
     id: str,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     sender = EmailSenderService.get_by_id(id, session)
     if not sender:
@@ -38,8 +35,7 @@ def get_email_sender(
 )
 def create_email_sender(
     data: EmailSenderInput,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     return EmailSenderService.create(data, session)
 
@@ -48,8 +44,7 @@ def create_email_sender(
 def update_email_sender(
     id: str,
     data: EmailSenderInput,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     updated = EmailSenderService.update(id, data, session)
     if not updated:
@@ -60,8 +55,7 @@ def update_email_sender(
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_email_sender(
     id: str,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     deleted = EmailSenderService.delete(id, session)
     if not deleted:

@@ -8,15 +8,13 @@ from app.configuration.database import get_session
 from app.domain.models.period import Period
 from app.domain.dtos.period.period_input import PeriodInput
 from app.service.crud.period_service import PeriodService
-from app.utils.auth import get_current_user  # <--- autenticación
 
 router = APIRouter(prefix="/periods", tags=["Periods"])
 
 
 @router.get("/", response_model=List[Period])
 def list_periods(
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     return PeriodService.get_all(session)
 
@@ -24,8 +22,7 @@ def list_periods(
 @router.get("/{cod_period}", response_model=Period)
 def get_period(
     cod_period: str,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     period = PeriodService.get_by_id(cod_period, session)
     if not period:
@@ -36,8 +33,7 @@ def get_period(
 @router.post("/", response_model=Period, status_code=status.HTTP_201_CREATED)
 def create_period(
     data: PeriodInput,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     return PeriodService.create_period(data, session)
 
@@ -46,8 +42,7 @@ def create_period(
 def update_period(
     cod_period: str,
     data: PeriodInput,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     updated = PeriodService.update_period(cod_period, data, session)
     if not updated:
@@ -58,8 +53,7 @@ def update_period(
 @router.delete("/{cod_period}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_period(
     cod_period: str,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     deleted = PeriodService.delete_period(cod_period, session)
     if not deleted:

@@ -3,7 +3,6 @@ from sqlmodel import Session
 from typing import List
 
 from app.configuration.database import get_session
-from app.utils.auth import get_current_user
 from app.domain.models.school_headquarters_associate import (
     SchoolHeadquartersAssociate
 )
@@ -22,8 +21,7 @@ router = APIRouter(
 
 @router.get("/", response_model=List[SchoolHeadquartersAssociate])
 def list_associations(
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     return SchoolHeadquartersAssociateService.get_all(session)
 
@@ -34,8 +32,7 @@ def get_association(
     cod_school: str,
     cod_headquarters: str,
     cod_period: str,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     assoc = SchoolHeadquartersAssociateService.get_by_id(
         cod_school,
@@ -49,14 +46,13 @@ def get_association(
 
 
 @router.post(
-    "/", 
+    "/",
     response_model=SchoolHeadquartersAssociate,
     status_code=status.HTTP_201_CREATED
 )
 def create_association(
     data: SchoolHeadquartersAssociateInput,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     return SchoolHeadquartersAssociateService.create(data, session)
 
@@ -69,8 +65,7 @@ def delete_association(
     cod_school: str,
     cod_headquarters: str,
     cod_period: str,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     deleted = SchoolHeadquartersAssociateService.delete(
         cod_school,

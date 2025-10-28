@@ -3,7 +3,6 @@ from sqlmodel import Session
 from openpyxl import Workbook
 
 from app.configuration.database import get_session
-from app.utils.auth import get_current_user
 from app.utils.type_file_validation import readExcelFile
 
 from app.service.excel_processor.process_file import process_file
@@ -16,8 +15,7 @@ router = APIRouter(prefix="/upload_excel", tags=["Excel Upload"])
 async def upload_excel_file(
     cod_period: str,
     file: UploadFile = File(...),
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     period = PeriodService.get_by_id(cod_period, session)
     if not period:

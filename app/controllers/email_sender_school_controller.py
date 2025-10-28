@@ -3,7 +3,6 @@ from sqlmodel import Session
 from typing import List
 
 from app.configuration.database import get_session
-from app.utils.auth import get_current_user
 from app.domain.models.email_sender_school import EmailSenderSchool
 from app.domain.dtos.email_sender_school.email_sender_school_input import (
     EmailSenderSchoolInput
@@ -21,8 +20,7 @@ router = APIRouter(
 
 @router.get("/", response_model=List[EmailSenderSchool])
 def list_associations(
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     return EmailSenderSchoolService.get_all(session)
 
@@ -31,8 +29,7 @@ def list_associations(
 def get_association(
     sender_id: str,
     cod_school: str,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     assoc = EmailSenderSchoolService.get_by_id(sender_id, cod_school, session)
     if not assoc:
@@ -47,8 +44,7 @@ def get_association(
 )
 def create_association(
     data: EmailSenderSchoolInput,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     return EmailSenderSchoolService.create(data, session)
 
@@ -60,8 +56,7 @@ def create_association(
 def delete_association(
     sender_id: str,
     cod_school: str,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     deleted = EmailSenderSchoolService.delete(sender_id, cod_school, session)
     if not deleted:

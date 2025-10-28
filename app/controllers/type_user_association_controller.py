@@ -3,7 +3,6 @@ from sqlmodel import Session
 from typing import List
 
 from app.configuration.database import get_session
-from app.utils.auth import get_current_user
 from app.domain.models.type_user_association import TypeUserAssociation
 from app.domain.dtos.type_user_association.type_user_association_input import (
     TypeUserAssociationInput
@@ -20,8 +19,7 @@ router = APIRouter(
 
 @router.get("/", response_model=List[TypeUserAssociation])
 def list_associations(
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     return TypeUserAssociationService.get_all(session)
 
@@ -32,8 +30,7 @@ def get_association(
     email_unal: str,
     type_user_id: str,
     cod_period: str,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     assoc = TypeUserAssociationService.get_by_id(
         email_unal,
@@ -53,8 +50,7 @@ def get_association(
 )
 def create_association(
     data: TypeUserAssociationInput,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     return TypeUserAssociationService.create(data, session)
 
@@ -67,8 +63,7 @@ def delete_association(
     email_unal: str,
     type_user_id: str,
     cod_period: str,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     deleted = TypeUserAssociationService.delete(
         email_unal,

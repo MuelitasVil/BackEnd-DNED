@@ -3,7 +3,6 @@ from sqlmodel import Session
 from typing import List
 
 from app.configuration.database import get_session
-from app.utils.auth import get_current_user
 from app.domain.models.headquarters import Headquarters
 from app.domain.dtos.headquarters.headquarters_input import HeadquartersInput
 from app.service.crud.headquarters_service import HeadquartersService
@@ -13,8 +12,7 @@ router = APIRouter(prefix="/headquarters", tags=["Headquarters"])
 
 @router.get("/", response_model=List[Headquarters])
 def list_headquarters(
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     return HeadquartersService.get_all(session)
 
@@ -22,8 +20,7 @@ def list_headquarters(
 @router.get("/{cod_headquarters}", response_model=Headquarters)
 def get_headquarters(
     cod_headquarters: str,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     hq = HeadquartersService.get_by_id(cod_headquarters, session)
     if not hq:
@@ -38,8 +35,7 @@ def get_headquarters(
 )
 def create_headquarters(
     data: HeadquartersInput,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     return HeadquartersService.create(data, session)
 
@@ -48,8 +44,7 @@ def create_headquarters(
 def update_headquarters(
     cod_headquarters: str,
     data: HeadquartersInput,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     updated = HeadquartersService.update(cod_headquarters, data, session)
     if not updated:
@@ -60,8 +55,7 @@ def update_headquarters(
 @router.delete("/{cod_headquarters}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_headquarters(
     cod_headquarters: str,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     deleted = HeadquartersService.delete(cod_headquarters, session)
     if not deleted:

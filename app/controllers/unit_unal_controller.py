@@ -3,7 +3,6 @@ from sqlmodel import Session
 from typing import List
 
 from app.configuration.database import get_session
-from app.utils.auth import get_current_user
 from app.domain.models.unit_unal import UnitUnal
 from app.domain.dtos.unit_unal.unit_unal_input import UnitUnalInput
 from app.service.crud.unit_unal_service import UnitUnalService
@@ -13,8 +12,7 @@ router = APIRouter(prefix="/units_unal", tags=["Units UNAL"])
 
 @router.get("/", response_model=List[UnitUnal])
 def list_units(
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     return UnitUnalService.get_all(session)
 
@@ -22,8 +20,7 @@ def list_units(
 @router.get("/{cod_unit}", response_model=UnitUnal)
 def get_unit(
     cod_unit: str,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     unit = UnitUnalService.get_by_id(
         cod_unit,
@@ -37,8 +34,7 @@ def get_unit(
 @router.post("/", response_model=UnitUnal, status_code=status.HTTP_201_CREATED)
 def create_unit(
     data: UnitUnalInput,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     return UnitUnalService.create(data, session)
 
@@ -47,8 +43,7 @@ def create_unit(
 def update_unit(
     cod_unit: str,
     data: UnitUnalInput,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     updated = UnitUnalService.update(cod_unit, data, session)
     if not updated:
@@ -59,8 +54,7 @@ def update_unit(
 @router.delete("/{cod_unit}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_unit(
     cod_unit: str,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     deleted = UnitUnalService.delete(cod_unit, session)
     if not deleted:

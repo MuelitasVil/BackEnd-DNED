@@ -3,7 +3,6 @@ from sqlmodel import Session
 from typing import List
 
 from app.configuration.database import get_session
-from app.utils.auth import get_current_user
 from app.domain.models.email_sender_headquarters import EmailSenderHeadquarters
 from app.domain.dtos.email_sender_headquarters.email_sender_headquarters_input import (  # noqa: E501 ignora error flake8
     EmailSenderHeadquartersInput
@@ -20,8 +19,7 @@ router = APIRouter(
 
 @router.get("/", response_model=List[EmailSenderHeadquarters])
 def list_associations(
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     return EmailSenderHeadquartersService.get_all(session)
 
@@ -33,8 +31,7 @@ def list_associations(
 def get_association(
     sender_id: str,
     cod_headquarters: str,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     assoc = EmailSenderHeadquartersService.get_by_id(
         sender_id, cod_headquarters, session
@@ -51,8 +48,7 @@ def get_association(
 )
 def create_association(
     data: EmailSenderHeadquartersInput,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     return EmailSenderHeadquartersService.create(data, session)
 
@@ -64,8 +60,7 @@ def create_association(
 def delete_association(
     sender_id: str,
     cod_headquarters: str,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     deleted = EmailSenderHeadquartersService.delete(
         sender_id, cod_headquarters, session

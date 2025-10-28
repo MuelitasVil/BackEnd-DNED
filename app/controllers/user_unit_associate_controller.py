@@ -3,7 +3,6 @@ from sqlmodel import Session
 from typing import List
 
 from app.configuration.database import get_session
-from app.utils.auth import get_current_user
 from app.domain.models.user_unit_associate import UserUnitAssociate
 from app.domain.dtos.user_unit_associate.user_unit_associate_input import (
     UserUnitAssociateInput
@@ -20,8 +19,7 @@ router = APIRouter(
 
 @router.get("/", response_model=List[UserUnitAssociate])
 def list_associations(
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     return UserUnitAssociateService.get_all(session)
 
@@ -34,8 +32,7 @@ def get_association(
     email_unal: str,
     cod_unit: str,
     cod_period: str,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     assoc = UserUnitAssociateService.get_by_id(
         email_unal, cod_unit, cod_period, session
@@ -52,8 +49,7 @@ def get_association(
 )
 def create_association(
     data: UserUnitAssociateInput,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     return UserUnitAssociateService.create(data, session)
 
@@ -66,8 +62,7 @@ def delete_association(
     email_unal: str,
     cod_unit: str,
     cod_period: str,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     deleted = UserUnitAssociateService.delete(
         email_unal, cod_unit, cod_period, session

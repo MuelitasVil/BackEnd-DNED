@@ -3,7 +3,6 @@ from sqlmodel import Session
 from typing import List
 
 from app.configuration.database import get_session
-from app.utils.auth import get_current_user
 from app.domain.models.email_sender_unit import EmailSenderUnit
 from app.domain.dtos.email_sender_unit.email_sender_unit_input import (
     EmailSenderUnitInput,
@@ -15,8 +14,7 @@ router = APIRouter(prefix="/email_sender_units", tags=["Email Sender Unit"])
 
 @router.get("/", response_model=List[EmailSenderUnit])
 def list_associations(
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     return EmailSenderUnitService.get_all(session)
 
@@ -25,8 +23,7 @@ def list_associations(
 def get_association(
     sender_id: str,
     cod_unit: str,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     assoc = EmailSenderUnitService.get_by_id(
         sender_id,
@@ -48,8 +45,7 @@ def get_association(
 )
 def create_association(
     data: EmailSenderUnitInput,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     return EmailSenderUnitService.create(data, session)
 
@@ -61,8 +57,7 @@ def create_association(
 def delete_association(
     sender_id: str,
     cod_unit: str,
-    session: Session = Depends(get_session),
-    user_email: str = Depends(get_current_user)
+    session: Session = Depends(get_session)
 ):
     deleted = EmailSenderUnitService.delete(sender_id, cod_unit, session)
     if not deleted:
