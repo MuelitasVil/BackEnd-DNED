@@ -5,6 +5,7 @@ CREATE PROCEDURE get_email_list_of_school (
     IN p_cod_period VARCHAR(50)
 )
 BEGIN
+    -- Miembros: Usuarios asociados a la escuela
     SELECT DISTINCT u.email AS email, 'MEMBER' AS tipo
     FROM unit_unal u
     JOIN unit_school_associate usa
@@ -13,15 +14,13 @@ BEGIN
      AND usa.cod_period = p_cod_period
     WHERE u.email IS NOT NULL AND u.email <> ''
 
-    UNION
+    UNION ALL
 
-    SELECT DISTINCT es.email AS email, 'OWNER' AS tipo
-    FROM email_sender es
-    JOIN email_sender_school ess
-      ON ess.sender_id  = es.id
-     AND ess.cod_school = p_cod_school
-    WHERE es.is_active = TRUE
-      AND es.role = 'OWNER'
-      AND es.email IS NOT NULL AND es.email <> '';
+    -- Propietarios: Emisores asociados a la escuela
+    SELECT DISTINCT ess.sender_id AS email, 'OWNER' AS tipo
+    FROM email_sender_school ess
+    WHERE ess.cod_school = p_cod_school
+
+    ORDER BY tipo DESC;  -- 'OWNER' primero y 'MEMBER' después
 END //
 DELIMITER ;

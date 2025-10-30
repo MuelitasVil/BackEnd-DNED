@@ -7,6 +7,10 @@ from app.domain.models.school import School
 from app.domain.dtos.school.school_input import SchoolInput
 from app.service.crud.school_service import SchoolService
 
+from app.service.use_cases.get_list_email_organization import (
+    get_email_list_of_school
+)
+
 router = APIRouter(prefix="/schools", tags=["Schools"])
 
 
@@ -26,6 +30,29 @@ def get_school(
     if not school:
         raise HTTPException(status_code=404, detail="School not found")
     return school
+
+
+@router.get("/get-email-list/{cod_school}/{cod_period}")
+def define_get_school(
+    cod_school: str,
+    cod_period: str,
+    session: Session = Depends(get_session)
+):
+    school = SchoolService.get_by_id(
+        cod_school,
+        session
+    )
+    if not school:
+        raise HTTPException(status_code=404, detail="School not found")
+
+    emails = get_email_list_of_school(session, cod_school, cod_period)
+    if not emails:
+        raise HTTPException(
+            status_code=404,
+            detail="No emails found for this school and period"
+        )
+
+    return emails
 
 
 @router.post("/", response_model=School, status_code=status.HTTP_201_CREATED)

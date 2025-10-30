@@ -7,6 +7,10 @@ from app.domain.models.headquarters import Headquarters
 from app.domain.dtos.headquarters.headquarters_input import HeadquartersInput
 from app.service.crud.headquarters_service import HeadquartersService
 
+from app.service.use_cases.get_list_email_organization import (
+    get_email_list_of_headquarters
+)
+
 router = APIRouter(prefix="/headquarters", tags=["Headquarters"])
 
 
@@ -26,6 +30,33 @@ def get_headquarters(
     if not hq:
         raise HTTPException(status_code=404, detail="Headquarters not found")
     return hq
+
+
+@router.get("/get-email-list/{cod_headquarters}/{cod_period}")
+def define_get_headquarters(
+    cod_headquarters: str,
+    cod_period: str,
+    session: Session = Depends(get_session)
+):
+    hq = HeadquartersService.get_by_id(
+        cod_headquarters,
+        session
+    )
+    if not hq:
+        raise HTTPException(status_code=404, detail="Headquarters not found")
+
+    emails = get_email_list_of_headquarters(
+        session,
+        cod_headquarters,
+        cod_period
+    )
+    if not emails:
+        raise HTTPException(
+            status_code=404,
+            detail="No emails found for this headquarters and period"
+        )
+
+    return emails
 
 
 @router.post(

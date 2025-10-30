@@ -5,6 +5,7 @@ CREATE PROCEDURE get_email_list_of_headquarters (
     IN p_cod_period       VARCHAR(50)
 )
 BEGIN
+    -- Miembros: Usuarios asociados a la sede
     SELECT DISTINCT s.email AS email, 'MEMBER' AS tipo
     FROM school s
     JOIN school_headquarters_associate sha
@@ -13,8 +14,9 @@ BEGIN
      AND sha.cod_period       = p_cod_period
     WHERE s.email IS NOT NULL AND s.email <> ''
 
-    UNION
+    UNION ALL
 
+    -- Propietarios: Emisores asociados a la sede
     SELECT DISTINCT es.email AS email, 'OWNER' AS tipo
     FROM email_sender es
     JOIN email_sender_headquarters esh
@@ -22,6 +24,8 @@ BEGIN
      AND esh.cod_headquarters = p_cod_headquarters
     WHERE es.is_active = TRUE
       AND es.role = 'OWNER'
-      AND es.email IS NOT NULL AND es.email <> '';
+      AND es.email IS NOT NULL AND es.email <> ''
+
+    ORDER BY tipo DESC;  -- 'OWNER' primero y 'MEMBER' después
 END //
 DELIMITER ;
