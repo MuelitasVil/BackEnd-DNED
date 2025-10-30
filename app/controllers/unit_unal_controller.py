@@ -33,6 +33,7 @@ def get_unit(
         raise HTTPException(status_code=404, detail="Unit not found")
     return unit
 
+
 @router.get("/get-email-list/{cod_unit}/{cod_period}")
 def define_get_unit(
     cod_unit: str,
