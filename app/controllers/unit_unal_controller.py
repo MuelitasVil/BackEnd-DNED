@@ -6,6 +6,9 @@ from app.configuration.database import get_session
 from app.domain.models.unit_unal import UnitUnal
 from app.domain.dtos.unit_unal.unit_unal_input import UnitUnalInput
 from app.service.crud.unit_unal_service import UnitUnalService
+from app.service.use_cases.get_list_email_organization import (
+    get_email_list_of_unit
+)
 
 router = APIRouter(prefix="/units_unal", tags=["Units UNAL"])
 
@@ -29,6 +32,29 @@ def get_unit(
     if not unit:
         raise HTTPException(status_code=404, detail="Unit not found")
     return unit
+
+
+@router.get("/{cod_unit}/{cod_period}")
+def define_get_unit(
+    cod_unit: str,
+    cod_period: str,
+    session: Session = Depends(get_session)
+):
+    unit = UnitUnalService.get_by_id(
+        cod_unit,
+        session
+    )
+    if not unit:
+        raise HTTPException(status_code=404, detail="Unit not found")
+
+    emails = get_email_list_of_unit(session, cod_unit, cod_period)
+    if not emails:
+        raise HTTPException(
+            status_code=404,
+            detail="No emails found for this unit and period"
+        )
+
+    return emails
 
 
 @router.post("/", response_model=UnitUnal, status_code=status.HTTP_201_CREATED)
