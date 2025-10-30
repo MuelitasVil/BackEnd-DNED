@@ -151,30 +151,30 @@ CREATE TABLE IF NOT EXISTS email_sender (
 
 -- Asociación: email_sender con unidad  (PK compuesta)
 CREATE TABLE IF NOT EXISTS email_sender_unit (
-    sender_id BIGINT UNSIGNED NOT NULL,
+    sender_id VARCHAR(50) NOT NULL,
     cod_unit  VARCHAR(50) NOT NULL,
     PRIMARY KEY (sender_id, cod_unit),
-    CONSTRAINT fk_esu_sender FOREIGN KEY (sender_id) REFERENCES email_sender(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_esu_sender FOREIGN KEY (sender_id) REFERENCES email_sender(email) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_esu_unit   FOREIGN KEY (cod_unit)  REFERENCES unit_unal(cod_unit) ON DELETE CASCADE ON UPDATE CASCADE,
     INDEX idx_esu_unit (cod_unit)
 ) ENGINE=InnoDB;
 
 -- Asociación: email_sender con escuela
 CREATE TABLE IF NOT EXISTS email_sender_school (
-    sender_id  BIGINT UNSIGNED NOT NULL,
+    sender_id  VARCHAR(50) NOT NULL,
     cod_school VARCHAR(50) NOT NULL,
     PRIMARY KEY (sender_id, cod_school),
-    CONSTRAINT fk_ess_sender FOREIGN KEY (sender_id)  REFERENCES email_sender(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_ess_sender FOREIGN KEY (sender_id)  REFERENCES email_sender(email) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_ess_school FOREIGN KEY (cod_school) REFERENCES school(cod_school) ON DELETE CASCADE ON UPDATE CASCADE,
     INDEX idx_ess_school (cod_school)
 ) ENGINE=InnoDB;
 
 -- Asociación: email_sender con sede
 CREATE TABLE IF NOT EXISTS email_sender_headquarters (
-    sender_id        BIGINT UNSIGNED NOT NULL,
+    sender_id        VARCHAR(50) NOT NULL,
     cod_headquarters VARCHAR(50) NOT NULL,
     PRIMARY KEY (sender_id, cod_headquarters),
-    CONSTRAINT fk_esh_sender       FOREIGN KEY (sender_id)        REFERENCES email_sender(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_esh_sender       FOREIGN KEY (sender_id)        REFERENCES email_sender(email) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_esh_headquarters FOREIGN KEY (cod_headquarters) REFERENCES headquarters(cod_headquarters) ON DELETE CASCADE ON UPDATE CASCADE,
     INDEX idx_esh_headquarters (cod_headquarters)
 ) ENGINE=InnoDB;

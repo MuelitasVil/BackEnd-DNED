@@ -91,16 +91,37 @@ def fill_associate_email_sender(session: Session):
 
     school_senders.extend(temp_school_senders)
 
-    EmailSenderUnitService.bulk_insert_ignore(
+    responseEmailUnitbulk = EmailSenderUnitService.bulk_insert_ignore(
         units_senders, session
     )
 
-    EmailSenderSchoolService.bulk_insert_ignore(
+    responseEmailSchoolBulk = EmailSenderSchoolService.bulk_insert_ignore(
         school_senders, session
     )
 
-    EmailSenderHeadquartersService.bulk_insert_ignore(
-        headquarters_senders, session
+    for hqs in headquarters_senders:
+        logger.info(
+            f"Headquarters Sender to insert: Sender ID: {hqs.sender_id}, "
+            f"Cod Headquarters: {hqs.cod_headquarters}"
+        )
+ 
+    responseEmailHeadquartersBulk = (
+        EmailSenderHeadquartersService.bulk_insert_ignore(
+            headquarters_senders, session
+        )
+    )
+
+    logger.info(
+        f"EmailSenderUnit bulk insert response: {responseEmailUnitbulk}"
+    )
+
+    logger.info(
+        f"EmailSenderSchool bulk insert response: {responseEmailSchoolBulk}"
+    )
+
+    logger.info(
+        f"EmailSenderHeadquarters bulk insert response: "
+        f"{responseEmailHeadquartersBulk}"
     )
 
 

@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS user_unal (
     headquarters VARCHAR(100) NULL
 ) ENGINE=InnoDB;
 
--- Tabla: user_workspace_associate
+-- Tabla: user_workspace_associate  (PK compuesta y FK a user_workspace)
 CREATE TABLE IF NOT EXISTS user_workspace_associate (
     email_unal        VARCHAR(100) NOT NULL,
     user_workspace_id VARCHAR(50)  NOT NULL,
@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS unit_unal (
     type_unit   VARCHAR(50)  NULL
 ) ENGINE=InnoDB;
 
--- Tabla: user_unit_associate
+-- Tabla: user_unit_associate  (PK compuesta)
 CREATE TABLE IF NOT EXISTS user_unit_associate (
     email_unal VARCHAR(100) NOT NULL,
     cod_unit   VARCHAR(50)  NOT NULL,
@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS school (
     type_facultad VARCHAR(50) NULL
 ) ENGINE=InnoDB;
 
--- Tabla: unit_school_associate
+-- Tabla: unit_school_associate  (PK compuesta)
 CREATE TABLE IF NOT EXISTS unit_school_associate (
     cod_unit   VARCHAR(50) NOT NULL,
     cod_school VARCHAR(50) NOT NULL,
@@ -121,7 +121,7 @@ CREATE TABLE IF NOT EXISTS headquarters (
     type_facultad    VARCHAR(50)  NULL
 ) ENGINE=InnoDB;
 
--- Tabla: school_headquarters_associate
+-- Tabla: school_headquarters_associate  (PK compuesta)
 CREATE TABLE IF NOT EXISTS school_headquarters_associate (
     cod_school       VARCHAR(50) NOT NULL,
     cod_headquarters VARCHAR(50) NOT NULL,
@@ -141,7 +141,7 @@ CREATE TABLE IF NOT EXISTS type_user (
     description  TEXT         NULL
 ) ENGINE=InnoDB;
 
--- Tabla: type_user_association
+-- Tabla: type_user_association  (ya tenías PK compuesta; agrego NOT NULL/índices)
 CREATE TABLE IF NOT EXISTS type_user_association (
     email_unal   VARCHAR(100) NOT NULL,
     type_user_id VARCHAR(50)  NOT NULL,
@@ -155,35 +155,30 @@ CREATE TABLE IF NOT EXISTS type_user_association (
 ) ENGINE=InnoDB;
 
 -- Tabla central de correos emisores
-CREATE TABLE email_sender (
+CREATE TABLE IF NOT EXISTS email_sender (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-
   email VARCHAR(254) NOT NULL,
   name  VARCHAR(150) NULL,
-
-  -- Regla única para este email:
-  org_type ENUM('GLOBAL','HEADQUARTERS','SCHOOL','UNIT','PLAN') NOT NULL DEFAULT 'GLOBAL',
-  org_code VARCHAR(100) NULL,          -- código de facultad/unidad/plan (si aplica)
-  sede_code VARCHAR(100) NULL,         -- "SEDE BOGOTÁ", "SEDE MEDELLÍN"... (si aplica)
+  org_type ENUM('GLOBAL','HEADQUARTERS','SCHOOL','UNIT') NOT NULL DEFAULT 'GLOBAL',
+  org_code VARCHAR(100) NULL,
+  sede_code VARCHAR(100) NULL,
   level ENUM('PRE','POS','ANY') NOT NULL DEFAULT 'ANY',
   role  ENUM('OWNER','MEMBER') NOT NULL DEFAULT 'OWNER',
   priority INT NOT NULL DEFAULT 100,
   is_active BOOLEAN NOT NULL DEFAULT TRUE,
-
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NULL ON UPDATE CURRENT_TIMESTAMP,
-
   UNIQUE KEY uq_email (email),
   -- Índices de consulta por ámbito:
   INDEX idx_scope (org_type, org_code, sede_code, level, role, priority)
 ) ENGINE=InnoDB;
 
--- Asociación: email_sender con unidad
+-- Asociación: email_sender con unidad  (PK compuesta)
 CREATE TABLE IF NOT EXISTS email_sender_unit (
     sender_id VARCHAR(50) NOT NULL,
     cod_unit  VARCHAR(50) NOT NULL,
     PRIMARY KEY (sender_id, cod_unit),
-    CONSTRAINT fk_esu_sender FOREIGN KEY (sender_id) REFERENCES email_sender(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_esu_sender FOREIGN KEY (sender_id) REFERENCES email_sender(email) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_esu_unit   FOREIGN KEY (cod_unit)  REFERENCES unit_unal(cod_unit) ON DELETE CASCADE ON UPDATE CASCADE,
     INDEX idx_esu_unit (cod_unit)
 ) ENGINE=InnoDB;
@@ -193,7 +188,7 @@ CREATE TABLE IF NOT EXISTS email_sender_school (
     sender_id  VARCHAR(50) NOT NULL,
     cod_school VARCHAR(50) NOT NULL,
     PRIMARY KEY (sender_id, cod_school),
-    CONSTRAINT fk_ess_sender FOREIGN KEY (sender_id)  REFERENCES email_sender(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_ess_sender FOREIGN KEY (sender_id)  REFERENCES email_sender(email) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_ess_school FOREIGN KEY (cod_school) REFERENCES school(cod_school) ON DELETE CASCADE ON UPDATE CASCADE,
     INDEX idx_ess_school (cod_school)
 ) ENGINE=InnoDB;
@@ -203,7 +198,7 @@ CREATE TABLE IF NOT EXISTS email_sender_headquarters (
     sender_id        VARCHAR(50) NOT NULL,
     cod_headquarters VARCHAR(50) NOT NULL,
     PRIMARY KEY (sender_id, cod_headquarters),
-    CONSTRAINT fk_esh_sender       FOREIGN KEY (sender_id)        REFERENCES email_sender(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_esh_sender       FOREIGN KEY (sender_id)        REFERENCES email_sender(email) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_esh_headquarters FOREIGN KEY (cod_headquarters) REFERENCES headquarters(cod_headquarters) ON DELETE CASCADE ON UPDATE CASCADE,
     INDEX idx_esh_headquarters (cod_headquarters)
 ) ENGINE=InnoDB;
