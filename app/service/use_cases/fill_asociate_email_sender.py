@@ -124,6 +124,10 @@ def fill_associate_email_sender(session: Session):
         f"{responseEmailHeadquartersBulk}"
     )
 
+    return (responseEmailUnitbulk,
+            responseEmailSchoolBulk,
+            responseEmailHeadquartersBulk)
+
 
 def process_email_sender(senders: list[EmailSender]):
     senders_global = []
