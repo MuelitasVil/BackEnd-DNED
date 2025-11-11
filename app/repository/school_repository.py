@@ -9,8 +9,12 @@ class SchoolRepository:
     def __init__(self, session: Session):
         self.session = session
 
-    def get_all(self) -> List[School]:
-        return self.session.exec(select(School)).all()
+    def get_all(
+            self, start: int = 0, limit: int = 100
+    ) -> List[School]:
+        return self.session.exec(
+            select(School).offset(start).limit(limit)
+        ).all()
 
     def get_by_id(self, cod_school: str) -> Optional[School]:
         return self.session.get(School, cod_school)

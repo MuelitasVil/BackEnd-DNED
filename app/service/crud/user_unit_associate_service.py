@@ -16,8 +16,11 @@ from app.service.crud.user_unal_service import UserUnalService
 
 class UserUnitAssociateService:
     @staticmethod
-    def get_all(session: Session) -> List[UserUnitAssociate]:
-        return UserUnitAssociateRepository(session).get_all()
+    def get_all(
+        session: Session, start: int = 0, limit: int = 20
+    ) -> List[UserUnitAssociate]:
+        repo = UserUnitAssociateRepository(session)
+        return repo.get_all(start=start, limit=limit)
 
     @staticmethod
     def get_by_user(

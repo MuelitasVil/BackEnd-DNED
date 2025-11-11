@@ -8,12 +8,16 @@ from app.domain.dtos.type_user.type_user_input import TypeUserInput
 
 class TypeUserService:
     @staticmethod
-    def get_all(session: Session) -> List[TypeUser]:
-        return TypeUserRepository(session).get_all()
+    def get_all(
+        session: Session, start: int = 0, limit: int = 100
+    ) -> List[TypeUser]:
+        repo = TypeUserRepository(session)
+        return repo.get_all(start=start, limit=limit)
 
     @staticmethod
     def get_by_id(type_user_id: str, session: Session) -> Optional[TypeUser]:
-        return TypeUserRepository(session).get_by_id(type_user_id)
+        repo = TypeUserRepository(session)
+        return repo.get_by_id(type_user_id)
 
     @staticmethod
     def create(input_data: TypeUserInput, session: Session) -> TypeUser:

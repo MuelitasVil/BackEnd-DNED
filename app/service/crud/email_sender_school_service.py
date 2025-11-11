@@ -14,8 +14,11 @@ from app.domain.dtos.email_sender_school.email_sender_school_input import (
 
 class EmailSenderSchoolService:
     @staticmethod
-    def get_all(session: Session) -> List[EmailSenderSchool]:
-        return EmailSenderSchoolRepository(session).get_all()
+    def get_all(
+        session: Session, start: int = 0, limit: int = 100
+    ) -> List[EmailSenderSchool]:
+        repo = EmailSenderSchoolRepository(session)
+        return repo.get_all(start=start, limit=limit)
 
     @staticmethod
     def get_by_id(

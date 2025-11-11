@@ -10,8 +10,11 @@ from app.utils.uuid_generator import generate_uuid
 
 class UserWorkspaceService:
     @staticmethod
-    def get_all(session: Session) -> List[UserWorkspace]:
-        return UserWorkspaceRepository(session).get_all()
+    def get_all(
+        session: Session, start: int = 0, limit: int = 100
+    ) -> List[UserWorkspace]:
+        repo = UserWorkspaceRepository(session)
+        return repo.get_all(start=start, limit=limit)
 
     @staticmethod
     def get_by_id(

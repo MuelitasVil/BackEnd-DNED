@@ -9,8 +9,12 @@ class UnitUnalRepository:
     def __init__(self, session: Session):
         self.session = session
 
-    def get_all(self) -> List[UnitUnal]:
-        return self.session.exec(select(UnitUnal)).all()
+    def get_all(
+            self, start: int = 0, limit: int = 100
+    ) -> List[UnitUnal]:
+        return self.session.exec(
+            select(UnitUnal).offset(start).limit(limit)
+        ).all()
 
     def get_by_id(self, cod_unit: str) -> Optional[UnitUnal]:
         return self.session.get(UnitUnal, cod_unit)

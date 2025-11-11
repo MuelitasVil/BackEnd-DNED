@@ -8,8 +8,10 @@ from app.domain.dtos.school.school_input import SchoolInput
 
 class SchoolService:
     @staticmethod
-    def get_all(session: Session) -> List[School]:
-        return SchoolRepository(session).get_all()
+    def get_all(
+        session: Session, start: int = 0, limit: int = 100
+    ) -> List[School]:
+        return SchoolRepository(session).get_all(start=start, limit=limit)
 
     @staticmethod
     def get_by_id(cod_school: str, session: Session) -> Optional[School]:

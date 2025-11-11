@@ -15,9 +15,13 @@ router = APIRouter(prefix="/units_unal", tags=["Units UNAL"])
 
 @router.get("/", response_model=List[UnitUnal])
 def list_units(
-    session: Session = Depends(get_session)
+    session: Session = Depends(get_session),
+    start: int = 0,
+    limit: int = 100
 ):
-    return UnitUnalService.get_all(session)
+    return UnitUnalService.get_all(
+        session, start=start, limit=limit
+    )
 
 
 @router.get("/{cod_unit}", response_model=UnitUnal)

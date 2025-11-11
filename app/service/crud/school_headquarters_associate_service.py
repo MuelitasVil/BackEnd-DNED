@@ -18,8 +18,11 @@ from app.service.crud.school_service import SchoolService
 
 class SchoolHeadquartersAssociateService:
     @staticmethod
-    def get_all(session: Session) -> List[SchoolHeadquartersAssociate]:
-        return SchoolHeadquartersAssociateRepository(session).get_all()
+    def get_all(
+        session: Session, start: int = 0, limit: int = 100
+    ) -> List[SchoolHeadquartersAssociate]:
+        repo = SchoolHeadquartersAssociateRepository(session)
+        return repo.get_all(start=start, limit=limit)
 
     @staticmethod
     def get_by_headquarters(

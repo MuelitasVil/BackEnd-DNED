@@ -19,10 +19,14 @@ router = APIRouter(
 
 @router.get("/", response_model=List[TypeUserAssociation])
 def list_associations(
-    session: Session = Depends(get_session)
+    session: Session = Depends(get_session),
+    start: int = 0,
+    limit: int = 100
 ):
-    return TypeUserAssociationService.get_all(session)
-
+    return TypeUserAssociationService.get_all(
+        session, start=start, limit=limit
+    )
+        
 
 @router.get("/{email_unal}/{type_user_id}/{cod_period}",
             response_model=TypeUserAssociation)

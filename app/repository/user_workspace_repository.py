@@ -8,8 +8,13 @@ class UserWorkspaceRepository:
     def __init__(self, session: Session):
         self.session = session
 
-    def get_all(self):
-        return self.session.query(UserWorkspace).all()
+    def get_all(self, start: int = 0, limit: int = 20) -> List[UserWorkspace]:
+        return (
+            self.session.query(UserWorkspace)
+            .offset(start)
+            .limit(limit)
+            .all()
+        )
 
     def get_by_id(self, workspace_id: str):
         return self.session.get(UserWorkspace, workspace_id)

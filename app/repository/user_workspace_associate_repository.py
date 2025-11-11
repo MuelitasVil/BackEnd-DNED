@@ -16,8 +16,16 @@ class UserWorkspaceAssociateRepository:
         self.session.refresh(associate)
         return associate
 
-    def get_all(self):
-        return self.session.exec(select(UserWorkspaceAssociate)).all()
+    def get_all(
+        self,
+        start: int = 0,
+        limit: int = 20
+    ) -> List[UserWorkspaceAssociate]:
+        return self.session.exec(
+            select(UserWorkspaceAssociate)
+            .offset(start)
+            .limit(limit)
+        ).all()
 
     def get_by_keys(self, email_unal: str, cod_unit: str, cod_period: str):
         return self.session.get(

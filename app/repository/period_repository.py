@@ -8,8 +8,12 @@ class PeriodRepository:
     def __init__(self, session: Session):
         self.session = session
 
-    def get_all(self) -> List[Period]:
-        return self.session.exec(select(Period)).all()
+    def get_all(
+            self, start: int = 0, limit: int = 100
+    ) -> List[Period]:
+        return self.session.exec(
+            select(Period).offset(start).limit(limit)
+        ).all()
 
     def get_by_id(self, cod_period: str) -> Optional[Period]:
         return self.session.get(Period, cod_period)

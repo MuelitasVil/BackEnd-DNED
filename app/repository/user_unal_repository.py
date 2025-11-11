@@ -10,8 +10,16 @@ class UserUnalRepository:
     def __init__(self, session: Session):
         self.session = session
 
-    def get_all(self) -> List[UserUnal]:
-        return self.session.exec(select(UserUnal)).all()
+    def get_all(self, start: int = 0, limit: int = 20) -> List[UserUnal]:
+        """
+        Obtiene todos los usuarios con paginación.
+        """
+        return (
+            self.session.exec(select(UserUnal)
+                              .offset(start)
+                              .limit(limit))
+            .all()
+        )
 
     def get_by_email(self, email_unal: str) -> Optional[UserUnal]:
         return self.session.get(UserUnal, email_unal)
@@ -25,7 +33,7 @@ class UserUnalRepository:
     def update(
         self,
         email_unal: str,
-        data: UserUnalInput
+        data: UserUnalInput,
     ) -> Optional[UserUnal]:
         user = self.get_by_email(email_unal)
         if not user:

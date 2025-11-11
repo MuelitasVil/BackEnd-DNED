@@ -10,8 +10,12 @@ class SchoolHeadquartersAssociateRepository:
     def __init__(self, session: Session):
         self.session = session
 
-    def get_all(self) -> List[SchoolHeadquartersAssociate]:
-        return self.session.exec(select(SchoolHeadquartersAssociate)).all()
+    def get_all(
+        self, start: int = 0, limit: int = 100
+    ) -> List[SchoolHeadquartersAssociate]:
+        return self.session.exec(
+            select(SchoolHeadquartersAssociate).offset(start).limit(limit)
+        ).all()
 
     def get_by_id(
             self,

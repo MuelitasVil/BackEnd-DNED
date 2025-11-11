@@ -8,8 +8,14 @@ class UserUnitAssociateRepository:
     def __init__(self, session: Session):
         self.session = session
 
-    def get_all(self) -> List[UserUnitAssociate]:
-        return self.session.exec(select(UserUnitAssociate)).all()
+    def get_all(
+        self, start: int = 0, limit: int = 20
+    ) -> List[UserUnitAssociate]:
+        return self.session.exec(
+            select(UserUnitAssociate)
+            .offset(start)
+            .limit(limit)
+        ).all()
 
     def get_by_user(self, email_unal: str) -> List[UserUnitAssociate]:
         statement = select(UserUnitAssociate).where(

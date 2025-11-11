@@ -8,12 +8,16 @@ from app.domain.dtos.email_sender.email_sender_input import EmailSenderInput
 
 class EmailSenderService:
     @staticmethod
-    def get_all(session: Session) -> List[EmailSender]:
-        return EmailSenderRepository(session).get_all()
+    def get_all(
+        session: Session, start: int = 0, limit: int = 100
+    ) -> List[EmailSender]:
+        repo = EmailSenderRepository(session)
+        return repo.get_all(start=start, limit=limit)
 
     @staticmethod
     def get_by_id(id: str, session: Session) -> Optional[EmailSender]:
-        return EmailSenderRepository(session).get_by_id(id)
+        repo = EmailSenderRepository(session)
+        return repo.get_by_id(id)
 
     @staticmethod
     def create(input_data: EmailSenderInput, session: Session) -> EmailSender:

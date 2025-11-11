@@ -15,9 +15,11 @@ router = APIRouter(prefix="/email_senders", tags=["Email Senders"])
 
 @router.get("/", response_model=List[EmailSender])
 def list_email_senders(
-    session: Session = Depends(get_session)
+    session: Session = Depends(get_session),
+    start: int = 0,
+    limit: int = 20
 ):
-    return EmailSenderService.get_all(session)
+    return EmailSenderService.get_all(session, start=start, limit=limit)
 
 
 @router.get("/{id}", response_model=EmailSender)

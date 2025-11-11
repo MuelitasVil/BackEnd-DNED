@@ -16,9 +16,11 @@ router = APIRouter(prefix="/schools", tags=["Schools"])
 
 @router.get("/", response_model=List[School])
 def list_schools(
-    session: Session = Depends(get_session)
+    session: Session = Depends(get_session),
+    start: int = 0,
+    limit: int = 100
 ):
-    return SchoolService.get_all(session)
+    return SchoolService.get_all(session, start=start, limit=limit)
 
 
 @router.get("/{cod_school}", response_model=School)

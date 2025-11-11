@@ -18,8 +18,11 @@ class UserWorkspaceAssociateService:
         return UserWorkspaceAssociateRepository(session).create(associate)
 
     @staticmethod
-    def get_all(session: Session):
-        return UserWorkspaceAssociateRepository(session).get_all()
+    def get_all(
+        session: Session, start: int = 0, limit: int = 100
+    ) -> List[UserWorkspaceAssociate]:
+        repo = UserWorkspaceAssociateRepository(session)
+        return repo.get_all(start=start, limit=limit)
 
     @staticmethod
     def delete(

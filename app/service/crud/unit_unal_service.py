@@ -8,8 +8,11 @@ from app.domain.dtos.unit_unal.unit_unal_input import UnitUnalInput
 
 class UnitUnalService:
     @staticmethod
-    def get_all(session: Session) -> List[UnitUnal]:
-        return UnitUnalRepository(session).get_all()
+    def get_all(
+        session: Session, start: int = 0, limit: int = 100
+    ) -> List[UnitUnal]:
+        repo = UnitUnalRepository(session)
+        return repo.get_all(start=start, limit=limit)
 
     @staticmethod
     def get_by_id(cod_unit: str, session: Session) -> Optional[UnitUnal]:

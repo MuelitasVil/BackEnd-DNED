@@ -9,8 +9,12 @@ class HeadquartersRepository:
     def __init__(self, session: Session):
         self.session = session
 
-    def get_all(self) -> List[Headquarters]:
-        return self.session.exec(select(Headquarters)).all()
+    def get_all(
+            self, start: int = 0, limit: int = 100
+    ) -> List[Headquarters]:
+        return self.session.exec(
+            select(Headquarters).offset(start).limit(limit)
+            ).all()
 
     def get_by_id(self, cod_headquarters: str) -> Optional[Headquarters]:
         return self.session.get(Headquarters, cod_headquarters)

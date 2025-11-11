@@ -21,16 +21,20 @@ router = APIRouter(prefix="/associates", tags=["UserWorkspaceAssociate"])
 )
 def create_associate(
     data: UserWorkspaceAssociateInput,
-    session: Session = Depends(get_session)
+    session: Session = Depends(get_session),
 ):
     return UserWorkspaceAssociateService.create(data, session)
 
 
 @router.get("/", response_model=List[UserWorkspaceAssociate])
 def list_associates(
-    session: Session = Depends(get_session)
+    session: Session = Depends(get_session),
+    start: int = 0,
+    limit: int = 100
 ):
-    return UserWorkspaceAssociateService.get_all(session)
+    return UserWorkspaceAssociateService.get_all(
+        session, start=start, limit=limit
+    )
 
 
 @router.delete("/", status_code=status.HTTP_204_NO_CONTENT)

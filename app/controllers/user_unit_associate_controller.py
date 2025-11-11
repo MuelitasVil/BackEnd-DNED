@@ -19,9 +19,11 @@ router = APIRouter(
 
 @router.get("/", response_model=List[UserUnitAssociate])
 def list_associations(
-    session: Session = Depends(get_session)
+    session: Session = Depends(get_session),
+    start: int = 0,
+    limit: int = 100
 ):
-    return UserUnitAssociateService.get_all(session)
+    return UserUnitAssociateService.get_all(session, start=start, limit=limit)
 
 
 @router.get(

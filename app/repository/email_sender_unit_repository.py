@@ -8,8 +8,12 @@ class EmailSenderUnitRepository:
     def __init__(self, session: Session):
         self.session = session
 
-    def get_all(self) -> List[EmailSenderUnit]:
-        return self.session.exec(select(EmailSenderUnit)).all()
+    def get_all(
+        self, start: int = 0, limit: int = 100
+    ) -> List[EmailSenderUnit]:
+        return self.session.exec(
+            select(EmailSenderUnit).offset(start).limit(limit)
+        ).all()
 
     def get_by_id(
         self,

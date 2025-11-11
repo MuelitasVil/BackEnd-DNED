@@ -14,9 +14,11 @@ router = APIRouter(prefix="/periods", tags=["Periods"])
 
 @router.get("/", response_model=List[Period])
 def list_periods(
-    session: Session = Depends(get_session)
+    session: Session = Depends(get_session),
+    start: int = 0,
+    limit: int = 100
 ):
-    return PeriodService.get_all(session)
+    return PeriodService.get_all(session, start=start, limit=limit)
 
 
 @router.get("/{cod_period}", response_model=Period)

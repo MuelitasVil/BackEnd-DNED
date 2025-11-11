@@ -1,15 +1,18 @@
 from typing import List, Optional
-from sqlmodel import Session
-
 from app.repository.user_unal_repository import UserUnalRepository
 from app.domain.models.user_unal import UserUnal
 from app.domain.dtos.user_unal.user_unal_input import UserUnalInput
+from sqlmodel import Session
 
 
 class UserUnalService:
     @staticmethod
-    def get_all(session: Session) -> List[UserUnal]:
-        return UserUnalRepository(session).get_all()
+    def get_all(
+        session: Session,
+        start: int = 0,
+        limit: int = 20,
+    ) -> List[UserUnal]:
+        return UserUnalRepository(session).get_all(start, limit)
 
     @staticmethod
     def get_by_email(email_unal: str, session: Session) -> Optional[UserUnal]:

@@ -12,8 +12,11 @@ from app.domain.dtos.type_user_association.type_user_association_input import (
 
 class TypeUserAssociationService:
     @staticmethod
-    def get_all(session: Session) -> List[TypeUserAssociation]:
-        return TypeUserAssociationRepository(session).get_all()
+    def get_all(
+        session: Session, start: int = 0, limit: int = 100
+    ) -> List[TypeUserAssociation]:
+        repo = TypeUserAssociationRepository(session)
+        return repo.get_all(start=start, limit=limit)
 
     @staticmethod
     def get_by_id(

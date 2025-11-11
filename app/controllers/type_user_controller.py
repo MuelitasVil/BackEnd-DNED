@@ -12,9 +12,13 @@ router = APIRouter(prefix="/type_users", tags=["Type Users"])
 
 @router.get("/", response_model=List[TypeUser])
 def list_type_users(
-    session: Session = Depends(get_session)
+    session: Session = Depends(get_session),
+    start: int = 0,
+    limit: int = 100
 ):
-    return TypeUserService.get_all(session)
+    return TypeUserService.get_all(
+        session, start=start, limit=limit
+    )
 
 
 @router.get("/{type_user_id}", response_model=TypeUser)

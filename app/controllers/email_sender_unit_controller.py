@@ -14,9 +14,13 @@ router = APIRouter(prefix="/email_sender_units", tags=["Email Sender Unit"])
 
 @router.get("/", response_model=List[EmailSenderUnit])
 def list_associations(
-    session: Session = Depends(get_session)
+    session: Session = Depends(get_session),
+    start: int = 0,
+    limit: int = 100
 ):
-    return EmailSenderUnitService.get_all(session)
+    return EmailSenderUnitService.get_all(
+        session, start=start, limit=limit
+    )
 
 
 @router.get("/{sender_id}/{cod_unit}", response_model=EmailSenderUnit)

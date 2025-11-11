@@ -26,7 +26,7 @@ from app.utils.app_logger import AppLogger
 logger = AppLogger(__file__)
 
 
-# TODO: Por el momento solo se rellena hasta facultades, porque no hay 
+# TODO: Por el momento solo se rellena hasta facultades, porque no hay
 # emails para unidades academicas en la base de datos.
 def fill_associate_email_sender(session: Session):
     email_senders: list[EmailSender] = EmailSenderService.get_all(session)
@@ -104,7 +104,7 @@ def fill_associate_email_sender(session: Session):
             f"Headquarters Sender to insert: Sender ID: {hqs.sender_id}, "
             f"Cod Headquarters: {hqs.cod_headquarters}"
         )
- 
+
     responseEmailHeadquartersBulk = (
         EmailSenderHeadquartersService.bulk_insert_ignore(
             headquarters_senders, session

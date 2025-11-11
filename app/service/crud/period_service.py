@@ -7,9 +7,11 @@ from typing import List, Optional
 
 class PeriodService:
     @staticmethod
-    def get_all(session: Session) -> List[Period]:
+    def get_all(
+        session: Session, start: int = 0, limit: int = 100
+    ) -> List[Period]:
         repo = PeriodRepository(session)
-        return repo.get_all()
+        return repo.get_all(start=start, limit=limit)
 
     @staticmethod
     def get_by_id(cod_period: str, session: Session) -> Optional[Period]:

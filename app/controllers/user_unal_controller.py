@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlmodel import Session
 from typing import List
 
@@ -14,9 +14,11 @@ router = APIRouter(prefix="/users_unal", tags=["Users UNAL"])
 
 @router.get("/", response_model=List[UserUnal])
 def list_users(
-    session: Session = Depends(get_session)
+    session: Session = Depends(get_session),
+    start: int = Query(0, ge=0),
+    limit: int = Query(20, ge=1)
 ):
-    return UserUnalService.get_all(session)
+    return UserUnalService.get_all(session, start=start, limit=limit)
 
 
 @router.get("/{email_unal}", response_model=UserUnal)

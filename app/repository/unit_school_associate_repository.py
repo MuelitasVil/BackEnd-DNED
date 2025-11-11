@@ -8,8 +8,12 @@ class UnitSchoolAssociateRepository:
     def __init__(self, session: Session):
         self.session = session
 
-    def get_all(self) -> List[UnitSchoolAssociate]:
-        return self.session.exec(select(UnitSchoolAssociate)).all()
+    def get_all(
+        self, start: int = 0, limit: int = 100
+    ) -> List[UnitSchoolAssociate]:
+        return self.session.exec(
+            select(UnitSchoolAssociate).offset(start).limit(limit)
+        ).all()
 
     def get_by_unit(self, cod_unit: str) -> List[UnitSchoolAssociate]:
         statement = select(UnitSchoolAssociate).where(

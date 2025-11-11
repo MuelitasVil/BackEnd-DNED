@@ -9,8 +9,12 @@ class TypeUserRepository:
     def __init__(self, session: Session):
         self.session = session
 
-    def get_all(self) -> List[TypeUser]:
-        return self.session.exec(select(TypeUser)).all()
+    def get_all(
+            self, start: int = 0, limit: int = 100
+    ) -> List[TypeUser]:
+        return self.session.exec(
+            select(TypeUser).offset(start).limit(limit)
+        ).all()
 
     def get_by_id(self, type_user_id: str) -> Optional[TypeUser]:
         return self.session.get(TypeUser, type_user_id)
